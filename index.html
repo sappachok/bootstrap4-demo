@@ -4,29 +4,210 @@
   <title>Bootstrap Example</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="bootstrap-4/css/bootstrap.min.css">
+  <link rel="stylesheet" href="bootstrap4/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-  <script src="bootstrap-4/js/bootstrap.min.js"></script>
+  <script src="bootstrap4/js/bootstrap.min.js"></script>
 </head>
+<style>
+.header {
+	display:block;
+	margin-top:20px;
+	padding-top:150px;
+	background-color:#dddddd;
+	height: 500px;
+	text-align:center;
+}
+.footer {
+	margin-top:30px;
+	padding:30px 0px;
+	background-color:#eeeeee;
+	height: 200px;
+	text-align:center;
+}
+.header-text {
+	font-size:4em;
+	margin-bottom:20px;
+}
+.my-photo {
+
+}
+.section {
+	margin-top:80px
+}
+</style>
 <body style="height:1500px">
 
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
-        <a class="navbar-brand" href="#">Logo</a>
-        <ul class="navbar-nav">
+        <a class="navbar-brand" href="#">My Blog</a>
+        <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
+            <a class="nav-link" href="#">บทความของฉัน</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
+            <a class="nav-link" href="#">เจ้าของ Blog</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">ติดต่อ</a>
           </li>
         </ul>
+
       </nav>
-      
-      <div class="container-fluid" style="margin-top:80px">
-        <h3>Top Fixed Navbar</h3>
-        <p>A fixed navigation bar stays visible in a fixed position (top or bottom) independent of the page scroll.</p>
-        <h1>Scroll this page to see the effect</h1>
+      <div class="container-fluid header">
+		<div class="header-text">Welcome to My Blog</div>
       </div>
+   
+      <div class="container section">
+        <h2>เกี่ยวกับ Bootstrap</h2>
+		<hr>
+		<div class="row">
+			<div class="col-md-4">
+				<h3>Bootstrap คืออะไร ?</h3>
+				<p>คือ Front-end Framework ตัวหนึ่ง ที่จะช่วยให้การพัฒนาเว็บไซต์ของเราเร็วขึ้น ง่ายขึ้น และเป็นระบบมากขึ้น ซึ่งคำว่า Bootstrap นี้ในภาษาอังกฤษมันมักจะหมายถึง “สิ่งที่ช่วยทำให้ง่ายขึ้น” หรือ “สิ่งที่ทำได้ด้วยตัวของมันเอง” ซึ่งในที่นี้น่าจะหมายความว่า ถ้าเราใช้ Bootstrap แล้ว เราก็ไม่จำเป็นต้องไปหาอะไรมาเพิ่มอีก</p>
+				<p><a href="#" class="btn btn-primary">อ่านบทความนี้ต่อ</a></p>
+			</div>
+			<div class="col-md-4">
+				<h3>มีอะไรบ้างใน Bootstrap?</h3>
+				<p>สิ่งที่ Bootstrap ให้มา มี 4 อย่าง คือ
+				(1) Scaffolding grid system จำนวน 12 คอลัมน์, 
+				(2) Base CSS style sheets สำหรับ html elements พื้นฐาน เช่น typography, tables, forms และ images,
+				(3) Components style sheets สำหรับสิ่งที่เราต้องใช้บ่อยๆ ไม่ว่าจะเป็น navigation, breadcrumbs รวมไปถึง pagination,
+				(4) JavaScript jQuery plugins ต่างๆ ไม่ว่าจะเป็น modal, carousel หรือ tooltip
+				</p>
+				<p><a href="#" class="btn btn-primary">อ่านบทความนี้ต่อ</a></p>
+			</div>
+			<div class="col-md-4">
+				<h3>เตรียมพร้อมก่อนใช้ Bootstrap</h3>
+				<p>ให้เราไป Download Bootstrap มาติดตั้งก่อนครับ เมื่อเราแตกไฟล์ออกมา เราจะได้ 3 folders คือ css, img, js จากนั้นให้เราสร้างไฟล์ index.html ขึ้นมาครับ แล้วใส่โค้ด html ...</p>
+				<p><a href="#" class="btn btn-primary">อ่านบทความนี้ต่อ</a></p>
+			</div>
+		</div>
+      </div>
+
+      <div class="container section">
+        <h2>การใช้ Table</h2>
+		<div class="row">
+			<div class="col-sm-12">
+			<table class="table table-striped table-hover">
+			<tr>
+				<th>Header Col #1</th>
+				<th>Header Col #2</th>
+				<th>Header Col #3</th>
+				<th>Header Col #4</th>
+			</tr>
+			<tr>
+				<td>Row 1.1</td>
+				<td>Row 1.2</td>
+				<td>Row 1.3</td>
+				<td>Row 1.4</td>
+			</tr>
+			<tr>
+				<td>Row 2.1</td>
+				<td>Row 2.2</td>
+				<td>Row 2.3</td>
+				<td>Row 2.4</td>
+			</tr>
+			<tr>
+				<td>Row 3.1</td>
+				<td>Row 3.2</td>
+				<td>Row 3.3</td>
+				<td>Row 3.4</td>
+			</tr>
+			</table>
+			</div>
+		</div>
+      </div>
+
+      <div class="container section">
+        <h2>การใช้ Images</h2>
+		<hr>
+		<h3>Responsive Images</h3>
+		<div class="row">
+			<div class="col-sm-12">
+				<img src="images/pic-1.jpg" class="img-fluid">
+			</div>
+		</div>
+		<div class="row no-gutters">
+			<div class="col-sm-4">
+				<img src="images/paris.jpg" class="img-fluid">
+			</div>			
+			<div class="col-sm-4">
+				<img src="images/newyork.jpg" class="img-fluid">
+			</div>			
+			<div class="col-sm-4">
+				<img src="images/sanfran.jpg" class="img-fluid">
+			</div>			
+		</div>
+		<h3>Image Shapes</h3>
+
+		<div class="row">
+			<div class="col-sm-4">
+				<img src="images/paris.jpg" class="img-fluid rounded">
+			</div>			
+			<div class="col-sm-4">
+				<img src="images/newyork.jpg" class="img-fluid rounded-circle">
+			</div>			
+			<div class="col-sm-4">
+				<img src="images/sanfran.jpg" class="img-fluid img-thumbnail">
+			</div>			
+		</div>
+		<h3>Aligning Images</h3>
+		<div class="row">
+			<div class="col-sm-12">
+				<img src="images/paris.jpg" class="img-fluid float-right">
+				<img src="images/newyork.jpg" class="img-fluid float-left">
+			</div>							
+		</div>
+	  </div>
+
+	  <div class="container section">
+		<h2>สร้างบัญชีผู้ใช้</h2>
+		<hr>
+		<div class="row">
+			<div class="col-sm-6">
+			<p>
+				<label>ชื่อ</label>
+				<input type="text" name="firstname" class="form-control" placeholder="กรุณาใส่ชื่อ">
+			</p>
+			</div>
+			<div class="col-sm-6">
+			<p>
+				<label>นามสกุล</label>
+				<input type="text" name="lastname" class="form-control" placeholder="กรุณาใส่นามสกุล">
+			</p>
+			</div>
+			<div class="col-sm-4">
+				<label>วันเดือนปี (เกิด)</label>
+				<div class="input-group">
+					<select class="form-control">
+						<option>วัน</option>
+					</select>
+					<select class="form-control">
+						<option>เดือน</option>
+					</select>
+					<select class="form-control">
+						<option>ปีพ.ศ.</option>
+					</select>
+				</div>
+			</div>
+			<div class="col-sm-4">
+			<p>
+				<label>อีเมล</label>
+				<input type="text" name="lastname" class="form-control" placeholder="กรุณาใส่อีเมล">
+			</p>
+			</div>
+			<div class="col-sm-4">
+			<p>
+				<label>เบอร์มือถือ</label>
+				<input type="text" name="lastname" class="form-control" placeholder="กรุณาใส่เบอร์มือถือ">
+			</p>
+			</div>
+
+		</div>
+	  </div>
+
+	  <div class="container-fluid footer">
+		<b>Copy Right Reserve. 2019</b>
+	  </div>
 </body>    
 </html>
