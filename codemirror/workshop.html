@@ -32,7 +32,7 @@
         
         #main {
             border: 1px solid #888;
-            background-color: #ffffff;
+            background-color: #eeeeee;
             margin-left: 600px;
             height: 600px;
         }
@@ -65,19 +65,46 @@
             border-left: 1px solid #aaaaaa;
             border-right: 1px solid #aaaaaa;
         }
+
+        .filetype-menu li.active {
+            background: #333333;
+            color: #ffffff;
+        }
     </style>
 </head>
 
 <body>
-    <div class="container-fluid">
-        <h2>HTML completion demo</h2>
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
+        <a class="navbar-brand" href="#">Bootstrap Turtorial</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <p>Shows the <a href="xmlcomplete.html">XML completer</a> parameterized with information about the tags in HTML. Press <strong>ctrl-space</strong> to activate completion.</p>
-        <p><button id="runBtn" type="button" class="btn btn-primary">Run</button></p>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#"><i class="fas fa-home"></i> หน้าแรก <span
+                                class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">My Project</a>
+                </li>
+            </ul>
+            <!--
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="ค้นหา.." aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i
+                            class="fas fa-search"></i> Search</button>
+            </form>-->
+        </div>
+    </nav>    
+    <br>
+    <div class="container-fluid">
+        <p><button id="runBtn" type="button" class="btn btn-primary"><i class="fas fa-play-circle"></i> Run</button></p>
         <p>
             <div class="filetype-menu">
                 <ul>
-                    <li id="html_code_sheet" class="code-sheet">HTML</li>
+                    <li id="html_code_sheet" class="code-sheet active">HTML</li>
                     <li id="css_code_sheet" class="code-sheet">CSS</li>
                     <li id="js_code_sheet" class="code-sheet">JS</li>
                 </ul>
@@ -93,44 +120,89 @@
                 <textarea id="jscode" name="jscode" style="display:none">Java Script...</textarea>
             </form>
         </div>
-        <div id="main"></div>
+        <div id="main"><iframe id="preview" frameborder="0" style="width:100%; height:100%;"></iframe></div>
     </div>
     <script>
         var htmleditor = "";
         var csseditor = "";
+        var jseditor = "";
 
         function run_update() {
-            $('#main').html(htmleditor.getValue());
-        }
+            
+            var body = "";
+            var css = "";
+            var js = "";
 
+            if (htmleditor) body = htmleditor.getValue();
+            if (csseditor) css = csseditor.getValue();
+            if (jseditor) js = jseditor.getValue();
+
+            var previewFrame = document.getElementById('preview');
+            var preview = previewFrame.contentDocument || previewFrame.contentWindow.document;
+            preview.open();
+            preview.write("<html>\n");
+            preview.write('<title>CodeMirror: HTML completion demo</title>\n' +
+            '<meta charset="utf-8">\n' +
+            '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
+            '<link rel="stylesheet" href="../assets/bootstrap4/css/bootstrap.min.css">\n' +
+            '<link rel="stylesheet" href="../assets/fontawesome5/css/all.min.css">\n' +
+            '<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></'+'script>\n' +
+            '<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></'+'script>\n' +
+            '<script src="../assets/bootstrap4/js/bootstrap.min.js"></'+'script>\n');
+
+            preview.write("<style>\n" + css + "\n</style>\n");
+            preview.write("<body>\n" + body + "\n</body>");
+            if (jseditor) {
+                preview.write("<script>\n" + js + "\n</" + "script>\n");
+            }
+            preview.write("</html>");
+            preview.close();
+        }
+        var loader = 1;
         function load_project(name) {
             console.log(name + " Project Loading... ");
+            var d = new Date();
             try {
-                $.get('projects/' + name + '/code.html', function(data) {
+                $.get('projects/' + name + '/code.html?' + d.getTime(), function(data) {
                     console.log(data);
                     $('textarea#htmlcode').val(data);
                     $('textarea#htmlcode').html(data);
-
-                    initEditor();
-                });
+                    initHtmlEditor();
+                    loader++;
+                    if(loader==3) run_update();
+                }, 'text');
             } catch {
 
             }
 
+            try {
+                $.get('projects/' + name + '/code.css?' + d.getTime(), function(data) {
+                    console.log(data);
+                    $('textarea#csscode').val(data);
+                    $('textarea#csscode').html(data);
+                    initCssEditor();
+                    loader++;
+                    if(loader==3) run_update();
+                }, 'text');
+            } catch {
 
-            /*
-            $.get('projects/' + name + '/code.css', function(data) {
-                $('textarea#csscode').val(data);
-                console.log($('textarea#csscode').val());
-            })
+            }
 
-            $.get('projects/' + name + '/code.js', function(data) {
-                $('textarea#jscode').val(data);
-                console.log($('textarea#jscode').val());
-            })*/
+            try {
+                $.get('projects/' + name + '/code.js?' + d.getTime(), function(data) {
+                    //console.log(data);
+                    $('textarea#jscode').val(data);
+                    $('textarea#jscode').html(data);
+                    initJsEditor();
+                    loader++;
+                    if(loader==3) run_update();
+                }, 'text');
+            } catch {
+
+            }
         }
 
-        function initEditor() {
+        function initHtmlEditor() {
 
             htmleditor = CodeMirror.fromTextArea(document.getElementById("htmlcode"), {
                 lineNumbers: true,
@@ -138,6 +210,9 @@
                     "Ctrl-Space": "autocomplete"
                 }
             });
+        };
+
+        function initCssEditor() {
 
             csseditor = CodeMirror.fromTextArea(document.getElementById("csscode"), {
                 lineNumbers: true,
@@ -146,6 +221,11 @@
                 },
                 mode: "text/css",
             });
+
+            csseditor.hide();
+        };
+
+        function initJsEditor() {
 
             jseditor = CodeMirror.fromTextArea(document.getElementById("jscode"), {
                 lineNumbers: true,
@@ -158,10 +238,8 @@
                 }
             });
 
-            csseditor.hide();
             jseditor.hide();
 
-            run_update();
         };
 
         var min = 300;
@@ -169,6 +247,7 @@
         var mainmin = 200;
 
         $('#split-bar').mousedown(function(e) {
+            $('#preview').hide();
             e.preventDefault();
             $(document).mousemove(function(e) {
                 e.preventDefault();
@@ -181,6 +260,7 @@
         });
 
         $(document).mouseup(function(e) {
+            $('#preview').show();
             $(document).unbind('mousemove');
         });
 
@@ -191,20 +271,31 @@
                 run_update();
             });
 
+            function editor_active(editor, sheet) {
+                editor.show();
+                sheet.addClass("active");
+            }
+
+            function editor_unactive(editor, sheet) {
+                editor.hide();
+                sheet.removeClass("active");
+            }
+
             $('.code-sheet').click(function() {
                 sheetid = $(this).attr("id");
                 if (sheetid == "html_code_sheet") {
-                    jseditor.hide();
-                    csseditor.hide();
-                    htmleditor.show();
+                    editor_unactive(jseditor, $("#js_code_sheet"));
+                    editor_unactive(csseditor, $("#css_code_sheet"));
+                    editor_active(htmleditor, $("#html_code_sheet"));
+                    
                 } else if (sheetid == "css_code_sheet") {
-                    jseditor.hide();
-                    htmleditor.hide();
-                    csseditor.show();
+                    editor_unactive(jseditor, $("#js_code_sheet"));
+                    editor_unactive(htmleditor, $("#html_code_sheet"));
+                    editor_active(csseditor, $("#css_code_sheet"));
                 } else if (sheetid == "js_code_sheet") {
-                    csseditor.hide();
-                    htmleditor.hide();
-                    jseditor.show();
+                    editor_unactive(htmleditor, $("#html_code_sheet"));
+                    editor_unactive(csseditor, $("#css_code_sheet"));
+                    editor_active(jseditor, $("#js_code_sheet"));
                 }
             })
 
