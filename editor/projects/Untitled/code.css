@@ -1,0 +1,11 @@
+body {
+  margin:0px;
+  padding:0px;
+}
+.small {
+  font-size: 0.5em;
+}
+
+.big {
+  font-size: 2em;
+}

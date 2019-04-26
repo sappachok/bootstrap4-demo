@@ -70,7 +70,24 @@ class Project extends CI_Controller {
 		
 		$data["project_library"] = $myproject;
 
-		$this->load->view('index', $data);
+		//$this->load->view('index', $data);
+		
+		$data["page_detail"] = $this->load->view('index', $data, true);
+		$this->view_template($data);		
+	}
+
+	function manage() {
+		$data = Array();
+		$map = directory_map($this->project_dir, 1);
+		$myproject = Array();
+		foreach($map as $dir => $val) {
+			$myproject[] = str_replace("\\","",$val);
+		}
+				
+		$data["project_library"] = $myproject;		
+		
+		$data["page_detail"] = $this->load->view('manage', $data, true);
+		$this->view_template($data);
 	}
 
 	function load_project($name) {
@@ -139,5 +156,24 @@ class Project extends CI_Controller {
 		{
 				echo "File js written!\n";
 		}		
+	}
+
+	function view_template($_data) {
+
+		$map = directory_map($this->project_dir, 1);
+		$myproject = Array();
+		foreach($map as $dir => $val) {
+			$myproject[] = str_replace("\\","",$val);
+		}
+				
+		$this->load->library('parser');
+		$data = array(
+			'page_title' => @$_data["page_title"],
+			'page_detail' => @$_data["page_detail"]
+		);
+		
+		$data["project_library"] = $myproject;
+
+		$this->parser->parse('template', $data);
 	}
 }

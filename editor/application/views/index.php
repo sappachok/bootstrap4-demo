@@ -1,155 +1,66 @@
-<!doctype html>
-<html>
+<link rel="stylesheet" href="../codemirror/lib/codemirror.css">
+<link rel="stylesheet" href="../codemirror/addon/hint/show-hint.css">
+<script src="../codemirror/lib/codemirror-custom.js"></script>
+<script src="../codemirror/addon/hint/show-hint.js"></script>
+<script src="../codemirror/addon/hint/xml-hint.js"></script>
+<script src="../codemirror/addon/hint/html-hint.js"></script>
+<script src="../codemirror/mode/xml/xml.js"></script>
+<script src="../codemirror/mode/javascript/javascript.js"></script>
+<script src="../codemirror/mode/css/css.js"></script>
+<script src="../codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<style>
+    .CodeMirror {
+        border-top: 1px solid #888;
+        border-bottom: 1px solid #888;
+        height: 600px;
+    }
+    
+    #main {
+        border: 1px solid #888;
+        background-color: #eeeeee;
+        margin-left: 600px;
+        height: 600px;
+    }
+    
+    #sidebar {
+        width: 600px;
+        float: left;
+        height: 600px;
+    }
+    
+    #split-bar {
+        height: 100%;
+        float: right;
+        width: 6px;
+        cursor: col-resize;
+    }
+    
+    .filetype-menu {
+        display: block;
+    }
+    
+    .filetype-menu li {
+        float: left;
+        list-style-type: none;
+        cursor: pointer;
+        padding: 5px 10px;
+        margin-right: 5px;
+        border-top: 1px solid #aaaaaa;
+        border-left: 1px solid #aaaaaa;
+        border-right: 1px solid #aaaaaa;
+    }
 
-<head>
-    <title>Bootstrap Tutor</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="../assets/bootstrap4/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/fontawesome5/css/all.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="../assets/bootstrap4/js/bootstrap.min.js"></script>
+    .filetype-menu li.active {
+        background: #333333;
+        color: #ffffff;
+    }
 
-    <link rel=stylesheet href="../codemirror/doc/docs.css">
+    #preview_code {
+        height: 500px;
+    }
+</style>
 
-    <link rel="stylesheet" href="../codemirror/lib/codemirror.css">
-    <link rel="stylesheet" href="../codemirror/addon/hint/show-hint.css">
-    <script src="../codemirror/lib/codemirror-custom.js"></script>
-    <script src="../codemirror/addon/hint/show-hint.js"></script>
-    <script src="../codemirror/addon/hint/xml-hint.js"></script>
-    <script src="../codemirror/addon/hint/html-hint.js"></script>
-    <script src="../codemirror/mode/xml/xml.js"></script>
-    <script src="../codemirror/mode/javascript/javascript.js"></script>
-    <script src="../codemirror/mode/css/css.js"></script>
-    <script src="../codemirror/mode/htmlmixed/htmlmixed.js"></script>
-    <style>
-        .CodeMirror {
-            border-top: 1px solid #888;
-            border-bottom: 1px solid #888;
-            height: 600px;
-        }
-        
-        #main {
-            border: 1px solid #888;
-            background-color: #eeeeee;
-            margin-left: 600px;
-            height: 600px;
-        }
-        
-        #sidebar {
-            width: 600px;
-            float: left;
-            height: 600px;
-        }
-        
-        #split-bar {
-            height: 100%;
-            float: right;
-            width: 6px;
-            cursor: col-resize;
-        }
-        
-        .filetype-menu {
-            display: block;
-            width: 100%;
-        }
-        
-        .filetype-menu li {
-            float: left;
-            list-style-type: none;
-            cursor: pointer;
-            padding: 5px 10px;
-            margin-right: 5px;
-            border-top: 1px solid #aaaaaa;
-            border-left: 1px solid #aaaaaa;
-            border-right: 1px solid #aaaaaa;
-        }
-
-        .filetype-menu li.active {
-            background: #333333;
-            color: #ffffff;
-        }
-
-        #preview_code {
-            height: 500px;
-        }
-    </style>
-</head>
 <body>
-    <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
-        <a class="navbar-brand" href="#">Bootstrap 4 Tutor</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#"><i class="fas fa-home"></i> หน้าแรก <span
-                                class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#load" data-toggle="modal" data-target="#myLoadModal">Load Project</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Tutorials
-						</a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Grids System</a>                        
-                        <a class="dropdown-item" href="#">Table</a>
-                        <a class="dropdown-item" href="#">Images</a>
-                        <a class="dropdown-item" href="#">Form</a>
-                        <a class="dropdown-item" href="#">Alert</a>
-                        <a class="dropdown-item" href="#">Navbar</a>
-                        <!--<div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">การติดต่อ</a>-->
-                    </div>
-                </li>                 
-            </ul>          
-            <!--
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="ค้นหา.." aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i
-                            class="fas fa-search"></i> Search</button>
-            </form>-->
-        </div>
-    </nav>    
-    <div class="modal" id="myLoadModal">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title">My Project</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-
-                <!-- Modal body -->
-                <div class="modal-body">
-                <table class="table table-striped">
-                <tr>
-                    <th><b>title</b></th>
-                </tr>
-                <?php
-                    foreach($project_library as $pname) {
-                        echo "<tr>";
-                        echo "<td><a href='?p=".$pname."'>".$pname."</a></td>";
-                        echo "</tr>";
-                    }
-                ?>
-                </table>
-                </div>
-
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                </div>
-
-                </div>
-            </div>
-            </div>    
     <br>
     <div class="container-fluid">
     <div class="row">
@@ -214,11 +125,18 @@
         </div>
     </div>
         <p>
-            <div class="filetype-menu">
+            <div class="filetype-menu float-left">
                 <ul>
                     <li id="html_code_sheet" class="code-sheet active">HTML</li>
                     <li id="css_code_sheet" class="code-sheet">CSS</li>
                     <li id="js_code_sheet" class="code-sheet">JS</li>
+                </ul>
+            </div>
+            <div class="filetype-menu float-right">
+                <ul>
+                    <li id="desktop" class="size-view active"><i class="fas fa-desktop"></i></li>
+                    <li id="tablet" class="size-view"><i class="fas fa-tablet-alt"></i></li>
+                    <li id="mobile" class="size-view"><i class="fas fa-mobile-alt"></i></li>
                 </ul>
             </div>
         </p>
@@ -386,7 +304,38 @@
                 editor.hide();
                 sheet.removeClass("active");
             }
+
+            function view_active(view) {                
+                view.addClass("active");
+            }
+
+            function view_unactive(view) {                
+                view.removeClass("active");
+            }            
             
+            $('.size-view').click(function(event ) {
+                viewid = $(this).attr("id");
+                if(viewid=="mobile") {
+                    var x = event.pageX - 500;
+                    view_unactive($("#desktop"));
+                    view_unactive($("#tablet"));
+                    view_active($("#mobile"));
+                } else if(viewid=="tablet") {
+                    var x = event.pageX - 800;
+                    view_unactive($("#desktop"));
+                    view_unactive($("#mobile"));
+                    view_active($("#tablet"));
+                } else if(viewid=="desktop") {
+                    var x = event.pageX - 1000;
+                    view_unactive($("#mobile"));
+                    view_unactive($("#tablet"));
+                    view_active($("#desktop"));
+                }
+
+                $('#sidebar').css("width", x);
+                $('#main').css("margin-left", x);
+            });
+
             $('.code-sheet').click(function() {
                 sheetid = $(this).attr("id");
                 if (sheetid == "html_code_sheet") {
