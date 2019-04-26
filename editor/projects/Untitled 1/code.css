@@ -7,5 +7,9 @@ body {
 }
 
 .big {
-  font-size: 2em;
+  font-size: 3em;
+}
+
+.border-red {
+  border:1px solid red; 
 }

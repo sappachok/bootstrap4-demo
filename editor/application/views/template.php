@@ -32,7 +32,9 @@
 							Project
 						</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#load" data-toggle="modal" data-target="#myLoadModal">Load</a>                        
+                        <a class="dropdown-item" href="<?php echo site_url("project"); ?>">New Project</a>
+                        <a class="dropdown-item" href="#load" data-toggle="modal" data-target="#myLoadModal">Load</a>     
+                        <div class="dropdown-divider"></div>               
                         <a class="dropdown-item" href="<?php echo site_url("project/manage"); ?>">Manage Project</a>
                     </div>
                 </li>                           
@@ -94,7 +96,6 @@
                 </div>
             </div>
     </div>
-    <br> 
     {page_detail}
 </body>
 </html>

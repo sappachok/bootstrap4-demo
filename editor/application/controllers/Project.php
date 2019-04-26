@@ -40,19 +40,39 @@ class Project extends CI_Controller {
 			//echo $this->project_dir;
 	}
 
+	public function get_projectname()
+	{
+		$name = "Untitled";
+
+		$map = directory_map($this->project_dir, 1);
+		$old = Array();
+		foreach($map as $pname) {
+			$pname = str_replace("\\","",$pname);
+			if(strpos($pname, $name)!==false) {
+				if(is_numeric(trim(str_replace($name,"",$pname)))) $old[$pname] = trim(str_replace($name,"",$pname));
+			}
+		}
+		if(@max($old)) $newname = $name." ".(max($old)+1);
+		else $newname = $name." 1";
+
+		return $newname;
+	}
+
 	public function index()
 	{
 		$data = Array();
 		$project_template = "bootstrap4";
 
-		if(!@$_GET["p"]) {
-			$load_project = "Untitled";
+		if(!@$_GET["p"]) {		
+			$load_project = $this->get_projectname();
 			$project_config = json_decode('{"name":"workshop-1","template":"'.$project_template.'"}');
+			$data["mode"] = "add";
 		} else {
 			$load_project = $_GET["p"];			
-			$project_config = json_decode(file_get_contents($this->project_dir."/".$_GET["p"]."/config.json"));			
+			$project_config = json_decode(file_get_contents($this->project_dir."/".$_GET["p"]."/config.json"));
+			$data["mode"] = "edit";
 			//var_dump($project_config);
-		}		
+		}
 		
 		$data["project"] = $this->load_project($load_project);
 		$data["project_config"] = $project_config;
@@ -66,13 +86,12 @@ class Project extends CI_Controller {
 		foreach($map as $dir => $val) {
 			$myproject[] = str_replace("\\","",$val);
 		}
-		
-		
+				
 		$data["project_library"] = $myproject;
 
 		//$this->load->view('index', $data);
 		
-		$data["page_detail"] = $this->load->view('index', $data, true);
+		$data["page_detail"] = $this->load->view('editor', $data, true);
 		$this->view_template($data);		
 	}
 
@@ -109,8 +128,16 @@ class Project extends CI_Controller {
 	}
 
 	function save() {
-		//var_dump($_POST);
 		$project_name = $_POST["project_name"];
+
+		if($_POST["mode"]=="add") {
+			if(@file_exists($this->project_dir.'/'.$project_name)) {
+				echo "folder exist";
+				return false;
+			}
+		}
+		//var_dump($_POST);
+
 		if(!@file_exists($this->project_dir.'/'.$project_name)) mkdir($this->project_dir.'/'.$project_name, 0775, TRUE);
 
 		$config = json_encode(Array(
@@ -156,6 +183,28 @@ class Project extends CI_Controller {
 		{
 				echo "File js written!\n";
 		}		
+	}
+
+	function rename() {
+
+		//var_dump($_POST);
+		//rename($oldDir.$file, $newDir.$file);
+		$pid = $_POST["pid"];
+		$pname = $_POST["pname"];
+		$newname = $_POST["newname"];
+
+		$project_folder = $this->project_dir.'/'.$pname;
+		if(file_exists($project_folder)) {
+			rename($this->project_dir.'/'.$pname, $this->project_dir.'/'.$newname);
+		}
+	}
+
+	function delete() {
+		$project_folder = $this->project_dir.'/'.$_POST["pid"];
+		if(file_exists($project_folder)) {
+			delete_files($project_folder, true);
+			rmdir($project_folder);
+		}
 	}
 
 	function view_template($_data) {
