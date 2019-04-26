@@ -1,0 +1,9 @@
+RewriteEngine on
+
+# Public website
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# RewriteCond $1 !^(forums|assets|data|res|images|font|resources|css|downloads|jquery|template|js|robots\.txt|favicon\.ico)
+
+RewriteRule ^(.*)$ index.php/$1 [QSA,L]
