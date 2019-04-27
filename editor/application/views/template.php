@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/bootstrap4/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/fontawesome5/css/all.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/jquery/3.3.1/jquery.min.js"></script>
+    <script src="<?php echo base_url(); ?>assets/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/bootstrap4/js/bootstrap.min.js"></script>
 </head>
 <body>
@@ -53,6 +53,9 @@
                         <a class="dropdown-item" href="#">การติดต่อ</a>-->
                     </div>
                 </li>                 
+                <li class="nav-item">
+                    <a class="nav-link" href="<?php echo site_url("project/boardcast"); ?>">Boardcast</a>
+                </li>    
             </ul>          
             <!--
             <form class="form-inline my-2 my-lg-0">

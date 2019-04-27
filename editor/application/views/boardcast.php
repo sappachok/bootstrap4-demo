@@ -18,21 +18,21 @@
 .CodeMirror {
     border-top: 1px solid #888;
     border-bottom: 1px solid #888;
-    height: 520px;
-    background-color: #eeeeee;
+    height: 500px;
+    background-color: #ccffff;
     font-size: 14px;
 }
 
 #main {
     border: 1px solid #888;
     margin-left: auto;
-    height: 520px;
+    height: 500px;
 }
 
 #sidebar {
     width: 100%;
     float: left;
-    height: 520px;
+    height: 500px;
 }
 
 #split-bar {
@@ -71,23 +71,17 @@ fieldset.form-group {
     border:1px solid #dddddd;
 }
 </style>
-
-
+<br>
 <div class="container-fluid">
 <div class="row">
+    <div class="col-12"> 
+		<h2>Code Boardcast</h2>
+	</div>
+	<hr>
     <div class="col-6"> 
     <p>
         <div class="input-group">
-            <input type="hidden" name="mode" value="<?php echo $mode; ?>">
-        <?php if($mode=="add") { ?>
-            <input type="text" name="project_name" class="form-control" value="<?php echo $project_name; ?>">
-        <?php } else if($mode=="edit") { ?>
             <input type="text" name="project_name" class="form-control" value="<?php echo $project_name; ?>" readonly>
-        <?php } ?>
-            <div class="input-group-append">
-                <button id="saveBtn" type="button" class="btn btn-primary"><i class="fa fa-save"></i> Save Project</button>
-                <button id="optionBtn" type="button" class="btn btn-dark" data-toggle="collapse" data-target="#setting"><i class="fas fa-ellipsis-v"></i> Options</button>
-            </div>
         </div>
     </p>
     </div>
@@ -112,7 +106,7 @@ fieldset.form-group {
             <!-- Modal body -->
             <div class="modal-body">
                 <iframe id="preview_code" frameborder="0" style="width:100%; height:520px;"></iframe>
-                <textarea id="preview_template" style="display:none;"><?php echo $preview_template; ?></textarea>
+                <textarea id="preview_template" style="display:none;"><?php echo htmlspecialchars($preview_template); ?></textarea>
             </div>
 
             <!-- Modal footer -->
@@ -138,7 +132,6 @@ fieldset.form-group {
             Array(
                 "bootstrap4"=>"Bootstrap 4",
                 "html5"=>"HTML 5",
-                "blank"=>"Blank",
             ),
             $project_template, "class='form-control'");             
         ?>
@@ -187,6 +180,7 @@ fieldset.form-group {
         //$("#preview_code").val(code);
         //$("#preview_code").html(code);
         var template = $('#preview_template').val();
+		//console.log(template);
         template = template.replace("{code}", code);
         previewcode.open();
         previewcode.write(template);
@@ -220,24 +214,15 @@ fieldset.form-group {
         var preview = previewFrame.contentDocument || previewFrame.contentWindow.document;
 
         var template = $("#template").val();
+		//console.log(template);
         template = template.replace("<body></body>", "<body>\n" + indent_tab(body, 1) + "</body>");
         template = template.replace("<style></style>", "<style>\n" + indent_tab(css, 1) + "</style>");
         template = template.replace("<script></"+"script>", "<script language='javascript'>\n" + indent_tab(js, 1) + "</"+"script>");
-		template = template.replace("<code></code>", indent_tab(body, 0));
         //console.log(template);
         preview.open();
-        preview.write(template);            
-        /*
-        preview.write("");
-
-        preview.write("<style>\n" + css + "\n</style>\n");
-        preview.write("<body>\n" + body + "\n</body>");
-        if (jseditor) {
-            preview.write("<script>\n" + js + "\n</" + "script>\n");
-        }
-        preview.write("</html>");
-        */
+        preview.write(template);
         preview.close();
+        console.log(template);
         update_preview(template);
     }
 
@@ -260,7 +245,8 @@ fieldset.form-group {
 
         htmleditor = CodeMirror.fromTextArea(document.getElementById("htmlcode"), {
             lineNumbers: true,
-            extraKeys: extraKeyOptions
+            extraKeys: extraKeyOptions,
+			readOnly: 'nocursor'
         });
     };
 
@@ -270,6 +256,7 @@ fieldset.form-group {
             lineNumbers: true,
             extraKeys: extraKeyOptions,
             mode: "text/css",
+			readOnly: 'nocursor'
         });
 
         csseditor.hide();
@@ -282,7 +269,8 @@ fieldset.form-group {
             extraKeys: extraKeyOptions,
             mode: {
                 name: "javascript",
-                globalVars: true
+                globalVars: true,
+				readOnly: 'nocursor'
             }
         });
 
@@ -412,39 +400,5 @@ fieldset.form-group {
         $("#viewcodeBtn").click(function() {
             run_update();
         });
-
-        $("#saveBtn").click(function() {
-            console.log('<?php echo site_url("project/save"); ?>');
-            run_update();
-            var mode = $("input[name=mode]").val();
-            var projectname = $("input[name=project_name]").val();
-            $.post('<?php echo site_url("project/save"); ?>', 
-            {
-                mode : mode,
-                project_name : projectname,
-                template : $("select[name=project_template]").val(),
-                files : {
-                    template : $('#preview_template').val(),
-                    html : htmleditor.getValue(),
-                    css : csseditor.getValue(),
-                    js : jseditor.getValue(),
-                }
-            }, 
-            function(data) {
-                if(data=="folder exist") {
-                    alert("This folder name is exist.");
-                    return false;
-                }
-
-                //alert("Project save completed.");
-
-                if(mode=="add") {
-                    window.location = "<?php echo base_url()."?p="; ?>" + projectname;
-                }
-
-                console.log(data);
-            });
-        });
-
     })
 </script>

@@ -19,10 +19,12 @@ class Project extends CI_Controller {
 	 * @see https://codeigniter.com/user_guide/general/urls.html
 	 */
 	public $project_dir = "";
+	public $boardcast_file = "boardcast.json";
 
 	public $template = Array(
 		"html5" => "html5_template",
 		"bootstrap4" => "bootstrap4_template",
+		"blank" => "blank_template",
 	);
 
 	public function __construct()
@@ -36,8 +38,9 @@ class Project extends CI_Controller {
 			$this->load->helper("directory");
 			
 			$this->project_dir = realpath(FCPATH.'/projects');
-
+			$this->boardcast_file = realpath(FCPATH.'\\'.$this->boardcast_file); 
 			//echo $this->project_dir;
+			//echo "config: ".$this->boardcast_file;
 	}
 
 	public function get_projectname()
@@ -78,21 +81,15 @@ class Project extends CI_Controller {
 		$data["project_config"] = $project_config;
 		$data["project_name"] = $load_project;
 		$data["template"] = $this->load->view($this->template[$project_config->template], null, true);
-		$data["preview_template"] = $this->load->view("preview_template", null, true);
+		$data["preview_template"] = $this->get_preview_template();
 		$data["project_template"] = $project_config->template;
 
-		$map = directory_map($this->project_dir, 1);
-		$myproject = Array();
-		foreach($map as $dir => $val) {
-			$myproject[] = str_replace("\\","",$val);
-		}
-				
-		$data["project_library"] = $myproject;
-
 		//$this->load->view('index', $data);
-		
 		$data["page_detail"] = $this->load->view('editor', $data, true);
-		$this->view_template($data);		
+		$this->view_template($data);
+		
+		$start = date("d-m-Y H:i:s");
+		if(@$_GET["p"]) $this->set_boardcast(Array("project_id"=>$_GET["p"],"start"=>$start));
 	}
 
 	function manage() {
@@ -200,11 +197,63 @@ class Project extends CI_Controller {
 	}
 
 	function delete() {
-		$project_folder = $this->project_dir.'/'.$_POST["pid"];
+		if(!@$_POST["pname"]) return false;
+
+		$project_folder = $this->project_dir.'/'.$_POST["pname"];
+
 		if(file_exists($project_folder)) {
 			delete_files($project_folder, true);
 			rmdir($project_folder);
 		}
+	}
+
+	function set_boardcast($config) {
+		$now = date("d-m-Y H:i:s");
+		$data = json_encode(Array(
+			"project_id"=>$config["project_id"],
+			"start"=>$config["project_id"],
+			"last_update"=>$now
+			));
+		//var_dump($data);
+
+		if(!write_file($this->boardcast_file, $data))
+		{
+				echo "Unable to write the boardcast config\n";
+		}	
+	}
+
+	function get_boardcast() {
+		$config = file_get_contents($this->boardcast_file);
+		return $config;
+	}
+
+	function boardcast() {
+		$data = Array();
+		$project_template = "bootstrap4";
+		$boardcast_config = json_decode($this->get_boardcast());
+		if(!@$boardcast_config) return false;
+
+		$project_id = $boardcast_config->project_id;
+
+		$load_project = $project_id;
+		$project_config = json_decode(file_get_contents($this->project_dir."/".$project_id."/config.json"));
+
+		$data["mode"] = "read";
+		$data["project"] = $this->load_project($load_project);
+		$data["project_config"] = $project_config;
+		$data["project_name"] = $load_project;
+		$data["template"] = $this->load->view($this->template[$project_config->template], null, true);
+		$data["preview_template"] = $this->get_preview_template(); //$this->load->view("preview_template", $data, true);
+		$data["project_template"] = $project_config->template;
+
+		//$this->load->view('index', $data);
+		
+		$data["page_detail"] = $this->load->view('boardcast', $data, true);
+		$this->view_template($data);
+	}
+
+	function get_preview_template() {
+		return $this->load->view("preview_template", null, true);
 	}
 
 	function view_template($_data) {
