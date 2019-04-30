@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Project extends CI_Controller {
+class Examples extends CI_Controller {
 
 	/**
 	 * Index Page for this controller.
@@ -27,6 +27,8 @@ class Project extends CI_Controller {
 		"blank" => "blank_template",
 	);
 
+	public $edit_mode = false;
+
 	public function __construct()
 	{
 			parent::__construct();
@@ -37,10 +39,11 @@ class Project extends CI_Controller {
 			$this->load->helper("form");			
 			$this->load->helper("directory");
 			
-			$this->project_dir = realpath(FCPATH.'/projects');
+			$this->project_dir = realpath(FCPATH.'/examples');
 			$this->boardcast_file = realpath(FCPATH.'/'.$this->boardcast_file); 
 			//echo $this->project_dir;
 			//echo "config: ".$this->boardcast_file;
+			if(@$_GET["edit"]==true) $this->edit_mode = true;
 	}
 
 	public function get_projectname()
@@ -60,19 +63,22 @@ class Project extends CI_Controller {
 
 		return $newname;
 	}
+	
+	public function index() {
 
-	public function index()
+	}
+
+	public function show($cid="", $pid="", $data="")
 	{
-		$data = Array();
 		$project_template = "bootstrap4";
-
-		if(!@$_GET["p"]) {		
+		$example_path = $cid."/".$pid;
+		if(!@$example_path) {		
 			$load_project = $this->get_projectname();
 			$project_config = json_decode('{"name":"workshop-1","template":"'.$project_template.'"}');
 			$data["mode"] = "add";
 		} else {
-			$load_project = $_GET["p"];			
-			$project_config = json_decode(file_get_contents($this->project_dir."/".$_GET["p"]."/config.json"));
+			$load_project = $example_path;			
+			$project_config = json_decode(file_get_contents($this->project_dir."/".$example_path."/config.json"));
 			$data["mode"] = "edit";
 			//var_dump($project_config);
 		}
@@ -80,30 +86,60 @@ class Project extends CI_Controller {
 		$data["project"] = $this->load_project($load_project);
 		$data["project_config"] = $project_config;
 		$data["project_name"] = $load_project;
+		$data["project_path"] = $example_path;
 		$data["template"] = $this->load->view($this->template[$project_config->template], null, true);
 		$data["preview_template"] = $this->get_preview_template();
 		$data["project_template"] = $project_config->template;
+		$data["edit_mode"] = $this->edit_mode;
 
 		//$this->load->view('index', $data);
-		$data["page_detail"] = $this->load->view('editor', $data, true);
+		$data["page_detail"] = $this->load->view('examples', $data, true);
 		$this->view_template($data);
 		
 		$start = date("d-m-Y H:i:s");
 		if(@$_GET["p"]) $this->set_boardcast(Array("project_id"=>$_GET["p"],"start"=>$start));
 	}
 
-	function manage() {
+	function css($name="") {
 		$data = Array();
-		$map = directory_map($this->project_dir, 1);
-		$myproject = Array();
-		foreach($map as $dir => $val) {
-			$myproject[] = str_replace("\\","",$val);
+		if($name=="") {
+			$topic = Array(
+				"CSS Example" => "css/css-example",
+				);
+			$data["title"] = "CSS";
+			$data["back"] = site_url("examples/css");
+			$data["topic"] = $topic;
+			$data["page_detail"] = $this->load->view('examples/list', $data, true);
+			$this->view_template($data);
+		} else {
+			$data["title"] = "CSS";
+			$data["back"] = site_url("examples/css");
+			$this->show("css", $name, $data);
 		}
-				
-		$data["project_library"] = $myproject;		
-		
-		$data["page_detail"] = $this->load->view('manage', $data, true);
-		$this->view_template($data);
+	}
+
+	function bootstrap4($name="") {
+		$data = Array();
+		if($name=="") {
+			$topic = Array(
+				"Grids system" => "bootstrap4/grids",
+				"Tables" => "bootstrap4/tables",
+				"Colors" => "bootstrap4/colors",
+				"Images" => "bootstrap4/images",
+				"Alerts" => "bootstrap4/alerts",
+				"Bedges" => "bootstrap4/bedges",
+				"Cards" => "bootstrap4/cards",
+				);
+			$data["title"] = "Boostrap 4";
+			$data["back"] = site_url("examples/css");
+			$data["topic"] = $topic;
+			$data["page_detail"] = $this->load->view('examples/list', $data, true);
+			$this->view_template($data);
+		} else {
+			$data["title"] = "Bootstrap 4";
+			$data["back"] = site_url("examples/bootstrap4");
+			$this->show("bootstrap4", $name, $data);
+		}
 	}
 
 	function load_project($name) {
@@ -116,33 +152,27 @@ class Project extends CI_Controller {
 		return $project;
 	}
 
-	function get_template($name="bootstrap4") {
-		if($name=="bootstrap4") $template = $this->load->view("bootstrap4_template", "", true);
-		else if($name=="html5") $template = $this->load->view("html5_template", "", true);
-		else $template="";
-
-		echo $template;
-	}
-
 	function save() {
 		$project_name = $_POST["project_name"];
+		$project_path = $_POST["project_path"];
+		if($project_path=="") return false;
 
 		if($_POST["mode"]=="add") {
-			if(@file_exists($this->project_dir.'/'.$project_name)) {
+			if(@file_exists($this->project_dir.'/'.$project_path)) {
 				echo "folder exist";
 				return false;
 			}
 		}
 		//var_dump($_POST);
 
-		if(!@file_exists($this->project_dir.'/'.$project_name)) mkdir($this->project_dir.'/'.$project_name, 0775, TRUE);
+		if(!@file_exists($this->project_dir.'/'.$project_path)) mkdir($this->project_dir.'/'.$project_path, 0775, TRUE);
 
 		$config = json_encode(Array(
-			"name" => $project_name, 
+			"name" => $project_name,
 			"template" => $_POST["template"]
 		));
 
-		if ( ! write_file($this->project_dir.'/'.$project_name.'/config.json', $config))
+		if ( ! write_file($this->project_dir.'/'.$project_path.'/config.json', $config))
 		{
 				echo "Unable to write the config file\n";
 		}
@@ -152,7 +182,7 @@ class Project extends CI_Controller {
 		}
 
 		$data = $_POST["files"]["html"];
-		if ( ! write_file($this->project_dir.'/'.$project_name.'/code.html', $data))
+		if ( ! write_file($this->project_dir.'/'.$project_path.'/code.html', $data))
 		{
 				echo "Unable to write the html file\n";
 		}
@@ -162,7 +192,7 @@ class Project extends CI_Controller {
 		}
 
 		$data = $_POST["files"]["css"];
-		if ( ! write_file($this->project_dir.'/'.$project_name.'/code.css', $data))
+		if ( ! write_file($this->project_dir.'/'.$project_path.'/code.css', $data))
 		{
 				echo "Unable to write the css file\n";
 		}
@@ -172,7 +202,7 @@ class Project extends CI_Controller {
 		}
 		
 		$data = $_POST["files"]["js"];
-		if ( ! write_file($this->project_dir.'/'.$project_name.'/code.js', $data))
+		if ( ! write_file($this->project_dir.'/'.$project_path.'/code.js', $data))
 		{
 				echo "Unable to write the js file\n";
 		}
@@ -182,74 +212,12 @@ class Project extends CI_Controller {
 		}		
 	}
 
-	function rename() {
+	function get_template($name="bootstrap4") {
+		if($name=="bootstrap4") $template = $this->load->view("bootstrap4_template", "", true);
+		else if($name=="html5") $template = $this->load->view("html5_template", "", true);
+		else $template="";
 
-		//var_dump($_POST);
-		//rename($oldDir.$file, $newDir.$file);
-		$pid = $_POST["pid"];
-		$pname = $_POST["pname"];
-		$newname = $_POST["newname"];
-
-		$project_folder = $this->project_dir.'/'.$pname;
-		if(file_exists($project_folder)) {
-			rename($this->project_dir.'/'.$pname, $this->project_dir.'/'.$newname);
-		}
-	}
-
-	function delete() {
-		if(!@$_POST["pname"]) return false;
-
-		$project_folder = $this->project_dir.'/'.$_POST["pname"];
-
-		if(file_exists($project_folder)) {
-			delete_files($project_folder, true);
-			rmdir($project_folder);
-		}
-	}
-
-	function set_boardcast($config) {
-		$now = date("d-m-Y H:i:s");
-		$data = json_encode(Array(
-			"project_id"=>$config["project_id"],
-			"start"=>$config["project_id"],
-			"last_update"=>$now
-			));
-		//var_dump($data);
-
-		if(!write_file($this->boardcast_file, $data, "wa"))
-		{
-				echo "Unable to write the boardcast config\n";
-		}	
-	}
-
-	function get_boardcast() {
-		$config = file_get_contents($this->boardcast_file);
-		return $config;
-	}
-
-	function boardcast() {
-		$data = Array();
-		$project_template = "bootstrap4";
-		$boardcast_config = json_decode($this->get_boardcast());
-		if(!@$boardcast_config) return false;
-
-		$project_id = $boardcast_config->project_id;
-
-		$load_project = $project_id;
-		$project_config = json_decode(file_get_contents($this->project_dir."/".$project_id."/config.json"));
-
-		$data["mode"] = "read";
-		$data["project"] = $this->load_project($load_project);
-		$data["project_config"] = $project_config;
-		$data["project_name"] = $load_project;
-		$data["template"] = $this->load->view($this->template[$project_config->template], null, true);
-		$data["preview_template"] = $this->get_preview_template(); //$this->load->view("preview_template", $data, true);
-		$data["project_template"] = $project_config->template;
-
-		//$this->load->view('index', $data);
-		
-		$data["page_detail"] = $this->load->view('boardcast', $data, true);
-		$this->view_template($data);
+		echo $template;
 	}
 
 	function get_preview_template() {
@@ -273,5 +241,10 @@ class Project extends CI_Controller {
 		$data["project_library"] = $myproject;
 
 		$this->parser->parse('template', $data);
+	}
+
+	function message($text="", $class="") {
+		$data["message"] = "<div class='".$class."'>".$text."</div>";
+		return $this->load->view("message", $data, true);
 	}
 }

@@ -79,14 +79,16 @@ fieldset.form-group {
 
 <div class="container-fluid">
 <div class="row">
+	<?php if($edit_mode==true) { ?>
     <div class="col-6"> 
     <p>
         <div class="input-group">
             <input type="hidden" name="mode" value="<?php echo $mode; ?>">
+            <input type="hidden" name="project_path" value="<?php echo $project_path; ?>">
         <?php if($mode=="add") { ?>
-            <input type="text" name="project_name" class="form-control" value="<?php echo $project_name; ?>">
+            <input type="text" name="project_name" class="form-control" value="<?php echo $project_config->name; ?>">
         <?php } else if($mode=="edit") { ?>
-            <input type="text" name="project_name" class="form-control" value="<?php echo $project_name; ?>" readonly>
+            <input type="text" name="project_name" class="form-control" value="<?php echo $project_config->name; ?>" readonly>
         <?php } ?>
             <div class="input-group-append">
                 <button id="saveBtn" type="button" class="btn btn-primary"><i class="fa fa-save"></i> Save Project</button>
@@ -95,6 +97,16 @@ fieldset.form-group {
         </div>
     </p>
     </div>
+	<?php } else { ?>
+    <div class="col-6"> 
+    <p>
+        <div class="input-group">
+            <input type="hidden" name="mode" value="<?php echo $mode; ?>">
+            <h2><a href="<?php echo $back; ?>"><?php echo $title; ?></a> / <?php echo $project_config->name; ?></h2>
+        </div>
+    </p>
+    </div>
+	<?php } ?>
     <div class="col-6">
     <p>
         <div class="form-group">
@@ -224,6 +236,7 @@ fieldset.form-group {
         var preview = previewFrame.contentDocument || previewFrame.contentWindow.document;
 
         var template = $("#template").val();
+
         template = template.replace("<body></body>", "<body>\n" + indent_tab(body, 1) + "</body>");
         template = template.replace("<style></style>", "<style>\n" + indent_tab(css, 1) + "</style>");
         template = template.replace("<script></"+"script>", "<script language='javascript'>\n" + indent_tab(js, 1) + "</"+"script>");
@@ -231,17 +244,7 @@ fieldset.form-group {
         //console.log(template);
         preview.open();
         preview.write(template);            
-        /*
-        preview.write("");
-
-        preview.write("<style>\n" + css + "\n</style>\n");
-        preview.write("<body>\n" + body + "\n</body>");
-        if (jseditor) {
-            preview.write("<script>\n" + js + "\n</" + "script>\n");
-        }
-        preview.write("</html>");
-        */
-        preview.close();
+		preview.close();
         update_preview(template);
     }
 
@@ -417,14 +420,17 @@ fieldset.form-group {
         });
 
         $("#saveBtn").click(function() {
-            console.log('<?php echo site_url("project/save"); ?>');
+            console.log('<?php echo site_url("examples/save"); ?>');
             run_update();
             var mode = $("input[name=mode]").val();
             var projectname = $("input[name=project_name]").val();
-            $.post('<?php echo site_url("project/save"); ?>', 
+            var projectpath = $("input[name=project_path]").val();
+
+			$.post('<?php echo site_url("examples/save"); ?>', 
             {
                 mode : mode,
                 project_name : projectname,
+                project_path : projectpath,
                 template : $("select[name=project_template]").val(),
                 files : {
                     template : $('#preview_template').val(),

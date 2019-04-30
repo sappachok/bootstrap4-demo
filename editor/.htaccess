@@ -4,6 +4,6 @@ RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-RewriteCond $1 !^(assets)
+RewriteCond $1 !^(assets|images)
 
 RewriteRule ^(.*)$ index.php/$1 [QSA,L]

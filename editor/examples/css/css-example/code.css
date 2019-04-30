@@ -1,0 +1,48 @@
+span {
+  padding: 5px;
+  border: 1px solid #dddddd;
+}
+
+.color-red {
+  color: red;
+}
+
+.small {
+  font-size: .6em;
+}
+
+.big {
+  font-size: 3em;
+}
+
+#one {
+  color: green;
+}
+
+#two {
+  color: blue;
+}
+
+#three {
+  color: orange; 
+}
+
+input {
+  border:1px solid green; 
+}
+
+input[type=text] {
+  padding: 15px; 
+}
+
+input[type=file] {
+  font-size: 3em; 
+}
+
+input[name=fullname] {
+  background-color: #dddddd; 
+}
+
+input[name=email] {
+  background-color: pink; 
+}

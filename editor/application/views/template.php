@@ -40,15 +40,13 @@
                 </li>                           
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Tutorials
+							Examples
 						</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Grids System</a>                        
-                        <a class="dropdown-item" href="#">Table</a>
-                        <a class="dropdown-item" href="#">Images</a>
-                        <a class="dropdown-item" href="#">Form</a>
-                        <a class="dropdown-item" href="#">Alert</a>
-                        <a class="dropdown-item" href="#">Navbar</a>
+                        <a class="dropdown-item disabled" href="<?php echo site_url("examples/html"); ?>">HTML</a>                        
+                        <a class="dropdown-item disabled" href="<?php echo site_url("examples/javascript"); ?>">Javascript</a>                        
+                        <a class="dropdown-item" href="<?php echo site_url("examples/css"); ?>">CSS</a>                        
+                        <a class="dropdown-item" href="<?php echo site_url("examples/bootstrap4"); ?>">Bootstrap 4</a>
                         <!--<div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#">การติดต่อ</a>-->
                     </div>
@@ -56,13 +54,7 @@
                 <li class="nav-item">
                     <a class="nav-link" href="<?php echo site_url("project/boardcast"); ?>">Boardcast</a>
                 </li>    
-            </ul>          
-            <!--
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="ค้นหา.." aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i
-                            class="fas fa-search"></i> Search</button>
-            </form>-->
+            </ul>
         </div>
     </nav>    
     <div class="modal" id="myLoadModal">
