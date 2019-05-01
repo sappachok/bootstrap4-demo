@@ -37,10 +37,18 @@ class Project extends CI_Controller {
 			$this->load->helper("form");			
 			$this->load->helper("directory");
 			
-			$this->project_dir = realpath(FCPATH.'/projects');
-			$this->boardcast_file = realpath(FCPATH.'/'.$this->boardcast_file); 
+			$base_dir = realpath(FCPATH);
+			$this->project_dir = $base_dir.'/projects';
+			$this->boardcast_file = $base_dir.'/'.$this->boardcast_file; 
 			//echo $this->project_dir;
 			//echo "config: ".$this->boardcast_file;
+			if(!file_exists($this->project_dir)) {
+				echo "sss".$this->project_dir;
+				if(!@mkdir($this->project_dir, 0775, true))
+				{
+					echo "Create Project Folder Success!!<br>";
+				} 
+			}
 	}
 
 	public function get_projectname()
@@ -64,28 +72,38 @@ class Project extends CI_Controller {
 	public function index()
 	{
 		$data = Array();
-		$project_template = "bootstrap4";
+		$project_template = "blank";
 
 		if(!@$_GET["p"]) {		
-			$load_project = $this->get_projectname();
+			$project_name = "";//$this->get_projectname();
 			$project_config = json_decode('{"name":"workshop-1","template":"'.$project_template.'"}');
 			$data["mode"] = "add";
 		} else {
-			$load_project = $_GET["p"];			
+			$project_name = $_GET["p"];			
+			if(!@file_exists($this->project_dir."/".$_GET["p"]."/config.json")) {
+				echo "Cannot load config file!!<br>";
+				return false;
+			}
 			$project_config = json_decode(file_get_contents($this->project_dir."/".$_GET["p"]."/config.json"));
 			$data["mode"] = "edit";
 			//var_dump($project_config);
 		}
 		
-		$data["project"] = $this->load_project($load_project);
+		$data["project"] = $this->load_project($project_name);
 		$data["project_config"] = $project_config;
-		$data["project_name"] = $load_project;
+		$data["project_name"] = $project_name;
 		$data["template"] = $this->load->view($this->template[$project_config->template], null, true);
+		$data["page_preview"] = "projects/".$project_name."/code.html";
+		echo $data["page_preview"];
 		$data["preview_template"] = $this->get_preview_template();
 		$data["project_template"] = $project_config->template;
 
 		//$this->load->view('index', $data);
-		$data["page_detail"] = $this->load->view('editor', $data, true);
+		if($project_name!="") {
+			$data["page_detail"] = $this->load->view('editor', $data, true);
+		} else {
+
+		}
 		$this->view_template($data);
 		
 		$start = date("d-m-Y H:i:s");

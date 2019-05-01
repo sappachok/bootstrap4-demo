@@ -32,8 +32,8 @@
 							Project
 						</a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="<?php echo site_url("project"); ?>">New Project</a>
-                        <a class="dropdown-item" href="#load" data-toggle="modal" data-target="#myLoadModal">Load</a>     
+                        <a class="dropdown-item" href="#create" data-toggle="modal" data-target="#createModal">New Project</a>
+                        <a class="dropdown-item" href="#load" data-toggle="modal" data-target="#loadModal">Load</a>     
                         <div class="dropdown-divider"></div>               
                         <a class="dropdown-item" href="<?php echo site_url("project/manage"); ?>">Manage Project</a>
                     </div>
@@ -57,7 +57,28 @@
             </ul>
         </div>
     </nav>    
-    <div class="modal" id="myLoadModal">
+    <div class="modal" id="createModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Create New Project</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+					<form>
+					<input type="text" name="new_project_name" class="form-control" placeholder="Please input your project name.">
+					</form>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button id="create_project_btn" type="submit" class="btn btn-primary">Create</button>
+                </div>
+                </div>
+            </div>
+    </div>
+    <div class="modal" id="loadModal">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
 
@@ -93,4 +114,34 @@
     </div>
     {page_detail}
 </body>
+<script>
+$(document).ready(function() {
+	$('#create_project_btn').click(function() {
+		$.post('<?php echo site_url("project/save"); ?>', 
+		{
+			mode : 'add',
+			project_name : $('input[name=new_project_name]').val(),
+			template : 'blank',
+			files : {
+				template : '',
+				html : '',
+				css : '',
+				js : '',
+			}
+		}, 
+		function(data) {
+			if(data=="folder exist") {
+				alert("This folder name is exist.");
+				return false;
+			}
+
+			//alert("Project save completed.");
+
+			window.location = "<?php echo base_url()."?p="; ?>" + $('input[name=new_project_name]').val();
+
+			console.log(data);
+		});
+	});
+});
+</script>
 </html>

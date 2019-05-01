@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Bootstrap 4 Tutor</title>
+    <title></title>
     <meta charset="utf-8">
     <style></style>
 </head>

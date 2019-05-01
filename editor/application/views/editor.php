@@ -21,7 +21,7 @@ body {
 .CodeMirror {
     border-top: 1px solid #888;
     border-bottom: 1px solid #888;
-    height: 520px;
+    height: 480px;
     background-color: #eeeeee;
     font-size: 14px;
 }
@@ -29,14 +29,14 @@ body {
 #main {
     border: 1px solid #888;
     margin-left: 420px;
-    height: 520px;
+    height: 480px;
     /*width: 75%;*/
 }
 
 #sidebar {
     width: 420px;
     float: left;
-    height: 520px;
+    height: 480px;
 }
 
 #split-bar {
@@ -178,7 +178,7 @@ fieldset.form-group {
             <textarea id="template" name="template" style="display:none"><?php echo $template; ?></textarea>
         </form>
     </div>
-    <div id="main" style="display:none;"><iframe id="preview" frameborder="0" style="width:100%; height:100%;"></iframe></div>
+    <div id="main" style="display:none;"><iframe id="preview" src="<?=$page_preview?>" frameborder="0" style="width:100%; height:100%;"></iframe></div>
 </div>
 <script>
     var htmleditor = "";
@@ -188,14 +188,14 @@ fieldset.form-group {
     function update_preview(code) {
         var previewcodeFrame = document.getElementById('preview_code');
         var previewcode = previewcodeFrame.contentDocument || previewcodeFrame.contentWindow.document;
-        //$("#preview_code").val(code);
-        //$("#preview_code").html(code);
+
         var template = $('#preview_template').val();
         template = template.replace("{code}", code);
         previewcode.open();
         previewcode.write(template);
-        previewcode.close();            
+        previewcode.close();
     }
+
     function indent_tab(code, num) {
         rows = code.split("\n");
 
@@ -210,6 +210,7 @@ fieldset.form-group {
 
         return indentcode;
     }
+
     function run_update() {
         
         var body = "";
@@ -223,25 +224,22 @@ fieldset.form-group {
         var previewFrame = document.getElementById('preview');
         var preview = previewFrame.contentDocument || previewFrame.contentWindow.document;
 
+
+		//$("#preview").attr("src","<? echo $page_preview; ?>");
+		alert("reload");
+		preview.location.reload();
         var template = $("#template").val();
+		/*
         template = template.replace("<body></body>", "<body>\n" + indent_tab(body, 1) + "</body>");
         template = template.replace("<style></style>", "<style>\n" + indent_tab(css, 1) + "</style>");
         template = template.replace("<script></"+"script>", "<script language='javascript'>\n" + indent_tab(js, 1) + "</"+"script>");
 		template = template.replace("<code></code>", indent_tab(body, 0));
-        //console.log(template);
+
+        console.log(template);
         preview.open();
         preview.write(template);            
-        /*
-        preview.write("");
-
-        preview.write("<style>\n" + css + "\n</style>\n");
-        preview.write("<body>\n" + body + "\n</body>");
-        if (jseditor) {
-            preview.write("<script>\n" + js + "\n</" + "script>\n");
-        }
-        preview.write("</html>");
-        */
-        preview.close();
+		*/
+        //preview.close();
         update_preview(template);
     }
 
@@ -261,7 +259,6 @@ fieldset.form-group {
     }
 
     function initHtmlEditor() {
-
         htmleditor = CodeMirror.fromTextArea(document.getElementById("htmlcode"), {
             lineNumbers: true,
             extraKeys: extraKeyOptions
@@ -269,7 +266,6 @@ fieldset.form-group {
     };
 
     function initCssEditor() {
-
         csseditor = CodeMirror.fromTextArea(document.getElementById("csscode"), {
             lineNumbers: true,
             extraKeys: extraKeyOptions,
@@ -280,7 +276,6 @@ fieldset.form-group {
     };
 
     function initJsEditor() {
-
         jseditor = CodeMirror.fromTextArea(document.getElementById("jscode"), {
             lineNumbers: true,
             extraKeys: extraKeyOptions,
@@ -291,7 +286,6 @@ fieldset.form-group {
         });
 
         jseditor.hide();
-
     };
 
     var min = 300;
