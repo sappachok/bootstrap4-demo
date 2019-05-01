@@ -88,18 +88,19 @@ class Project extends CI_Controller {
 			$data["mode"] = "edit";
 			//var_dump($project_config);
 		}
-		
-		$data["project"] = $this->load_project($project_name);
-		$data["project_config"] = $project_config;
-		$data["project_name"] = $project_name;
-		$data["template"] = $this->load->view($this->template[$project_config->template], null, true);
-		$data["page_preview"] = "projects/".$project_name."/code.html";
-		echo $data["page_preview"];
-		$data["preview_template"] = $this->get_preview_template();
-		$data["project_template"] = $project_config->template;
 
 		//$this->load->view('index', $data);
 		if($project_name!="") {
+			$data["project"] = $this->load_project($project_name);
+			$data["project_config"] = $project_config;
+			$data["project_name"] = $project_name;
+			$data["template"] = $this->load->view($this->template[$project_config->template], null, true);
+			$data["page_preview"] = "projects/".$project_name."/code.html";
+			//$data["page_preview"] = "http://127.0.0.1/bootstrap4-tutor/editor/projects/".$project_name."/code.html";
+
+			$data["preview_template"] = $this->get_preview_template();
+			$data["project_template"] = $project_config->template;
+
 			$data["page_detail"] = $this->load->view('editor', $data, true);
 		} else {
 

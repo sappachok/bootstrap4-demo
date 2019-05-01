@@ -3,8 +3,9 @@
     padding:5px;
 }
 </style>
+<br>
 <div class="container">
-    <h2>My Project</h2>   
+    <h2><i class="fas fa-laptop-code"></i> My Project</h2>   
     <br> 
     <table class="table">
     <tr>

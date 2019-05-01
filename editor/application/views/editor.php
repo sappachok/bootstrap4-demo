@@ -224,21 +224,28 @@ fieldset.form-group {
         var previewFrame = document.getElementById('preview');
         var preview = previewFrame.contentDocument || previewFrame.contentWindow.document;
 
+		var dt = new Date()
+		var page_preview = "<?php echo $page_preview; ?>?time="+dt.getTime();
 
-		//$("#preview").attr("src","<? echo $page_preview; ?>");
-		alert("reload");
-		preview.location.reload();
+		//$("#preview").attr("src", page_preview);
+		//alert("reload");
+		//preview.location.reload();
         var template = $("#template").val();
-		/*
-        template = template.replace("<body></body>", "<body>\n" + indent_tab(body, 1) + "</body>");
-        template = template.replace("<style></style>", "<style>\n" + indent_tab(css, 1) + "</style>");
-        template = template.replace("<script></"+"script>", "<script language='javascript'>\n" + indent_tab(js, 1) + "</"+"script>");
-		template = template.replace("<code></code>", indent_tab(body, 0));
+;
+		//$('#preview').find("body").html(template);
+		
+        //template = template.replace("<body></body>", "<body>\n" + indent_tab(body, 1) + "</body>");
+        //template = template.replace("<style></style>", "<style>\n" + indent_tab(css, 1) + "</style>");
+        //template = template.replace("<script></"+"script>", "<script language='javascript'>\n" + indent_tab(js, 1) + "</"+"script>");
+		template = template.replace("<code></code>", body);
 
-        console.log(template);
-        preview.open();
-        preview.write(template);            
-		*/
+        //console.log(template);
+		$("#preview").contents().find('html').html(template);
+		//var context = $('iframe')[1].contentWindow.document;
+		//var $body = $('body', context);
+		//$body.html(template);
+        //preview.open("text/html", "replace");
+        //preview.write(template);
         //preview.close();
         update_preview(template);
     }
@@ -248,8 +255,6 @@ fieldset.form-group {
         initHtmlEditor();
         initCssEditor();
         initJsEditor();
-
-        run_update();
     }
 
     var extraKeyOptions = {
@@ -411,8 +416,9 @@ fieldset.form-group {
         });
 
         $("#saveBtn").click(function() {
-            console.log('<?php echo site_url("project/save"); ?>');
-            run_update();
+            //console.log('<?php echo site_url("project/save"); ?>');
+	        run_update();
+
             var mode = $("input[name=mode]").val();
             var projectname = $("input[name=project_name]").val();
             $.post('<?php echo site_url("project/save"); ?>', 

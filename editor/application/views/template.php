@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Bootstrap Tutor</title>
@@ -66,15 +66,15 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <!-- Modal body -->
+				<form name="createProjectForm">
                 <div class="modal-body">
-					<form>
 					<input type="text" name="new_project_name" class="form-control" placeholder="Please input your project name.">
-					</form>
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">
                     <button id="create_project_btn" type="submit" class="btn btn-primary">Create</button>
                 </div>
+				</form>
                 </div>
             </div>
     </div>
@@ -116,7 +116,8 @@
 </body>
 <script>
 $(document).ready(function() {
-	$('#create_project_btn').click(function() {
+	$('form[name=createProjectForm]').submit(function(e) {
+		e.preventDefault();
 		$.post('<?php echo site_url("project/save"); ?>', 
 		{
 			mode : 'add',
