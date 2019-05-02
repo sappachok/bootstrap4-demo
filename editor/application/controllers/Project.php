@@ -20,6 +20,7 @@ class Project extends CI_Controller {
 	 */
 	public $project_dir = "";
 	public $zip_dir = "";
+	public $boardcast_host = "https://ict.nstru.ac.th/bootstrap4-tutor/editor";
 	public $boardcast_file = "boardcast.json";
 
 	public $template = Array(
@@ -377,8 +378,9 @@ class Project extends CI_Controller {
 		$project_id = $boardcast_config->project_id;
 
 		$load_project = $project_id;
-		$project_config = json_decode(file_get_contents($this->project_dir."/".$project_id."/config.json"));
-
+		$project_config = json_decode(file_get_contents($this->boardcast_host."/".$project_id."/config.json"));
+		var_dump($project_config);
+		return false;
 		$data["mode"] = "read";
 		$data["project"] = $this->load_project($load_project);
 		$data["project_config"] = $project_config;
@@ -401,6 +403,7 @@ class Project extends CI_Controller {
 
 		$map = directory_map($this->project_dir, 1);
 		$myproject = Array();
+		if($myproject)
 		foreach($map as $dir => $val) {
 			$myproject[] = str_replace("\\","",$val);
 		}
