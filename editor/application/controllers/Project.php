@@ -19,6 +19,7 @@ class Project extends CI_Controller {
 	 * @see https://codeigniter.com/user_guide/general/urls.html
 	 */
 	public $project_dir = "";
+	public $zip_dir = "";
 	public $boardcast_file = "boardcast.json";
 
 	public $template = Array(
@@ -38,7 +39,9 @@ class Project extends CI_Controller {
 			$this->load->helper("directory");
 			
 			$base_dir = realpath(FCPATH);
+			$this->zip_dir = $base_dir.'/zip';
 			$this->project_dir = $base_dir.'/projects';
+			//echo $this->project_dir;
 			$this->boardcast_file = $base_dir.'/'.$this->boardcast_file; 
 			//echo $this->project_dir;
 			//echo "config: ".$this->boardcast_file;
@@ -94,9 +97,11 @@ class Project extends CI_Controller {
 			$data["project"] = $this->load_project($project_name);
 			$data["project_config"] = $project_config;
 			$data["project_name"] = $project_name;
-			$data["template"] = $this->load->view($this->template[$project_config->template], null, true);
-			$data["page_preview"] = "projects/".$project_name."/code.html";
-			//$data["page_preview"] = "http://127.0.0.1/bootstrap4-tutor/editor/projects/".$project_name."/code.html";
+			//$data["template"] = $this->load->view($this->template[$project_config->template], null, true);
+			$data["template"] = "<code></code>";
+			//$data["page_preview"] = "projects/".$project_name."/code.html";
+			$data["page_preview"] = "projects/".$project_name."/prev.php";
+			//$data["page_preview"] = "http://127.0.0.1/bootstrap4-tutor/editor/projects/".$project_name."/edit.php";
 
 			$data["preview_template"] = $this->get_preview_template();
 			$data["project_template"] = $project_config->template;
@@ -141,6 +146,113 @@ class Project extends CI_Controller {
 		else $template="";
 
 		echo $template;
+	}
+
+	function zip() {
+		$project_name = @$_POST["project_name"];
+		$project_name = "My Blog";
+		$this->load->library('zip');
+
+		if(!@file_exists($this->zip_dir)) mkdir($this->zip_dir, 0775, TRUE);
+
+		$target_dir = $this->project_dir."/".$project_name;
+
+		$dir = $this->get_dir($target_dir);
+
+		var_dump($dir);
+		//echo $target_dir;
+
+		//$this->zip->download('my_code.zip');
+	}
+
+	function get_dir($target_dir, $root="", $data="") {
+		$dir = directory_map($target_dir);
+		$data = Array();
+		foreach($dir as $name => $val) {
+			if(!is_array($val)) {
+				$path = $root.$val;
+				//echo $path."<br>";
+				$data[$path] = $path;
+				//$data = file_get_contents($target_dir."/".$val);
+				//$this->zip->add_data($val, $data);
+			} else {			
+				$path = $root.$name;
+				//echo $path."<br>";
+				$data[$path] = $path;
+				//$this->zip($name, $val);
+				$data = $this->get_dir($target_dir."/".$name, $path);
+			}
+			//$data = file_get_contents($target_dir."/".$val);
+			//$this->zip->add_data($val, $data);
+		}
+		return $data;
+	}
+
+	function create() {
+		$project_name = $_POST["project_name"];
+		$template = $_POST["template"];
+
+		if($_POST["mode"]=="add") {
+			if(@file_exists($this->project_dir.'/'.$project_name)) {
+				echo "folder exist";
+				return false;
+			}
+		}
+
+		if(!@file_exists($this->project_dir.'/'.$project_name)) mkdir($this->project_dir.'/'.$project_name, 0775, TRUE);
+		$config = json_encode(Array(
+			"name" => $project_name, 
+			"template" => $_POST["template"]
+		));
+
+		if ( ! write_file($this->project_dir.'/'.$project_name.'/config.json', $config))
+		{
+				echo "Unable to write the config file\n";
+		}
+		else
+		{
+				echo "File html written!\n";
+		}
+
+		$data = $this->load->view("project_templates/".$template."/code.html", null, true);
+		if ( ! write_file($this->project_dir.'/'.$project_name.'/code.html', $data))
+		{
+				echo "Unable to write the html file\n";
+		}
+		else
+		{
+				echo "File html written!\n";
+		}
+
+		$data = $this->load->view("project_templates/".$template."/code.css", null, true);
+		if ( ! write_file($this->project_dir.'/'.$project_name.'/code.css', $data))
+		{
+				echo "Unable to write the css file\n";
+		}
+		else
+		{
+				echo "File css written!\n";
+		}
+		
+		$data = $this->load->view("project_templates/".$template."/code.js", null, true);
+		if ( ! write_file($this->project_dir.'/'.$project_name.'/code.js', $data))
+		{
+				echo "Unable to write the js file\n";
+		}
+		else
+		{
+				echo "File js written!\n";
+		}
+
+		$data = "<?php include(\"../../preview.php\"); ?>";
+		if ( ! write_file($this->project_dir.'/'.$project_name.'/prev.php', $data))
+		{
+				echo "Unable to write the prev file\n";
+		}
+		else
+		{
+				echo "File prev written!\n";
+		}
 	}
 
 	function save() {
@@ -198,7 +310,17 @@ class Project extends CI_Controller {
 		else
 		{
 				echo "File js written!\n";
-		}		
+		}
+
+		$data = "<?php include(\"../../preview.php\"); ?>";
+		if ( ! write_file($this->project_dir.'/'.$project_name.'/prev.php', $data))
+		{
+				echo "Unable to write the prev file\n";
+		}
+		else
+		{
+				echo "File prev written!\n";
+		}
 	}
 
 	function rename() {

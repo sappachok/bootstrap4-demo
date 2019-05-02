@@ -9,6 +9,7 @@
     <script src="<?php echo base_url(); ?>assets/jquery/3.3.1/jquery.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="<?php echo base_url(); ?>assets/bootstrap4/js/bootstrap.min.js"></script>
+	<script>jQuery.noConflict();</script>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
@@ -37,7 +38,8 @@
                         <div class="dropdown-divider"></div>               
                         <a class="dropdown-item" href="<?php echo site_url("project/manage"); ?>">Manage Project</a>
                     </div>
-                </li>                           
+                </li>
+				<!--
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							Examples
@@ -46,11 +48,10 @@
                         <a class="dropdown-item disabled" href="<?php echo site_url("examples/html"); ?>">HTML</a>                        
                         <a class="dropdown-item disabled" href="<?php echo site_url("examples/javascript"); ?>">Javascript</a>                        
                         <a class="dropdown-item" href="<?php echo site_url("examples/css"); ?>">CSS</a>                        
-                        <a class="dropdown-item" href="<?php echo site_url("examples/bootstrap4"); ?>">Bootstrap 4</a>
-                        <!--<div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#">การติดต่อ</a>-->
+                        <a class="dropdown-item" href="<?php echo site_url("examples/bootstrap4"); ?>">Bootstrap 4</a>                    
                     </div>
-                </li>                 
+                </li>     
+				-->
                 <li class="nav-item">
                     <a class="nav-link" href="<?php echo site_url("project/boardcast"); ?>">Boardcast</a>
                 </li>    
@@ -68,7 +69,18 @@
                 <!-- Modal body -->
 				<form name="createProjectForm">
                 <div class="modal-body">
+				<p>
+					<label>Project Name</label>
 					<input type="text" name="new_project_name" class="form-control" placeholder="Please input your project name.">
+				</p>
+				<p>
+					<label>Template</label>
+					<select name="create_template" class="form-control">
+						<option value="html5">HTML5</option>
+						<option value="bootstrap4">Bootstrap 4</option>
+						<option value="blank">Blank</option>
+					</select>
+				</p>
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">
@@ -84,7 +96,7 @@
 
                 <!-- Modal Header -->
                 <div class="modal-header">
-                    <h4 class="modal-title">My Project</h4>
+                    <h4 class="modal-title">Load Project</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
 
@@ -115,14 +127,14 @@
     {page_detail}
 </body>
 <script>
-$(document).ready(function() {
-	$('form[name=createProjectForm]').submit(function(e) {
+jQuery(document).ready(function() {
+	jQuery('form[name=createProjectForm]').submit(function(e) {
 		e.preventDefault();
-		$.post('<?php echo site_url("project/save"); ?>', 
+		jQuery.post('<?php echo site_url("project/create"); ?>', 
 		{
 			mode : 'add',
-			project_name : $('input[name=new_project_name]').val(),
-			template : 'blank',
+			project_name : jQuery('input[name=new_project_name]').val(),
+			template : jQuery('select[name=create_template]').val(),
 			files : {
 				template : '',
 				html : '',
@@ -138,7 +150,7 @@ $(document).ready(function() {
 
 			//alert("Project save completed.");
 
-			window.location = "<?php echo base_url()."?p="; ?>" + $('input[name=new_project_name]').val();
+			window.location = "<?php echo base_url()."?p="; ?>" + jQuery('input[name=new_project_name]').val();
 
 			console.log(data);
 		});

@@ -10,7 +10,8 @@
     <table class="table">
     <tr>
         <th>ชื่อ</th>
-        <th></th>
+        <th>เปลี่ยนชื่อ</th>
+        <th>ลบทิ้ง</th>
     </tr>
     <?php
         foreach($project_library as $pname) {
@@ -22,18 +23,18 @@
             echo "<p><button type='submit' class='btn btn-primary save-btn'>Save</button> <button type='button' class='btn btn-default cancel-btn'>Cancel</button></p>";
             echo "</form></td>";
             echo "<td><a href='#rename' data-pid='".$pid."' data-pname='".$pname."' class='rename'><i class='fas fa-edit'></i></a></td>";
-            echo "<td><a href='#delete' data-pid='".$pid."' data-pname='".$pname."' class='delete-btn'><i class='fas fa-trash-alt'></i></a></td>";       
+            echo "<td><a href='#delete' data-pid='".$pid."' data-pname='".$pname."' class='delete-btn text-danger'><i class='fas fa-trash-alt'></i></a></td>";       
             echo "</tr>";
         }
     ?>
     </table>
 </div>
 <script language="javascript">
-$('.delete-btn').click(function() {
+jQuery('.delete-btn').click(function() {
     if(window.confirm('Are you sure want delete this project ?')) {
-        pid = $(this).attr("data-pid");
-        pname = $(this).attr("data-pname");
-        $.post("<?php echo site_url("project/delete"); ?>", { pid: pid, pname: pname},
+        pid = jQuery(this).attr("data-pid");
+        pname = jQuery(this).attr("data-pname");
+        jQuery.post("<?php echo site_url("project/delete"); ?>", { pid: pid, pname: pname},
         function(data) {
             console.log(data);
             window.location.reload();
@@ -41,35 +42,35 @@ $('.delete-btn').click(function() {
     }
 });
 
-$('.rename').click(function() {
+jQuery('.rename').click(function() {
     //alert("rename");
-    var pid = $(this).attr("data-pid");
-    //var $div=$('div.project-name[data-pid='+pid+']'), isEditable=$div.is('.editable');
+    var pid = jQuery(this).attr("data-pid");
+    //var $div=jQuery('div.project-name[data-pid='+pid+']'), isEditable=$div.is('.editable');
     //$div.prop('contenteditable',!isEditable).toggleClass('editable');
-    //var $div=$('div.project-name[data-pid='+pid+']');
+    //var $div=jQuery('div.project-name[data-pid='+pid+']');
     //$div.prop('contenteditable').toggleClass('editable');
-    var $div=$('input[data-pid='+pid+']');
+    var $div = jQuery('input[data-pid='+pid+']');
     $div.closest("form").show();
     $div.focus();
 
-    $("a[data-pid="+pid+"]").hide();
+    jQuery("a[data-pid="+pid+"]").hide();
 })
 
-$('.cancel-btn').click(function() {
-    var pid = $(this).closest("form").attr("data-pid");
-    var newname = $("input[data-pid="+pid+"]").val(pid);
-    $("a[data-pid="+pid+"]").show();
-    $("form[data-pid="+pid+"]").hide();
+jQuery('.cancel-btn').click(function() {
+    var pid = jQuery(this).closest("form").attr("data-pid");
+    var newname = jQuery("input[data-pid="+pid+"]").val(pid);
+    jQuery("a[data-pid="+pid+"]").show();
+    jQuery("form[data-pid="+pid+"]").hide();
 });
 
-$('form.edit').submit(function(event) {
+jQuery('form.edit').submit(function(event) {
     event.preventDefault();
 });
 
-$('.save-btn').click(function() {
-    var pid = $(this).closest("form").attr("data-pid");
-    var pname = $(this).closest("form").attr("data-pname");
-    var newname = $("input[data-pid="+pid+"]").val();
+jQuery('.save-btn').click(function() {
+    var pid = jQuery(this).closest("form").attr("data-pid");
+    var pname = jQuery(this).closest("form").attr("data-pname");
+    var newname = jQuery("input[data-pid="+pid+"]").val();
     
     $.post('<?php echo site_url("project/rename"); ?>',
     {

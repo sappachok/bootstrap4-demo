@@ -90,7 +90,7 @@ fieldset.form-group {
         <?php } ?>
             <div class="input-group-append">
                 <button id="saveBtn" type="button" class="btn btn-primary"><i class="fa fa-save"></i> Save Project</button>
-                <button id="optionBtn" type="button" class="btn btn-dark" data-toggle="collapse" data-target="#setting"><i class="fas fa-ellipsis-v"></i> Options</button>
+                <!--<button id="optionBtn" type="button" class="btn btn-dark" data-toggle="collapse" data-target="#setting"><i class="fas fa-ellipsis-v"></i> Options</button>-->
             </div>
         </div>
     </p>
@@ -99,7 +99,8 @@ fieldset.form-group {
     <p>
         <div class="form-group">
         <button id="runBtn" type="button" class="btn btn-success"><i class="fas fa-play-circle"></i> Run</button>
-        <button id="viewcodeBtn" type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal"><i class="fas fa-code"></i> View Code</button>            
+		<button type="button" class="btn btn-dark"><i class="fas fa-download"></i> Download</button>
+        <!--<button id="viewcodeBtn" type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal"><i class="fas fa-code"></i> View Code</button>-->
         <!-- Button to Open the Modal -->
 
         <!-- The Modal -->
@@ -178,7 +179,7 @@ fieldset.form-group {
             <textarea id="template" name="template" style="display:none"><?php echo $template; ?></textarea>
         </form>
     </div>
-    <div id="main" style="display:none;"><iframe id="preview" src="<?=$page_preview?>" frameborder="0" style="width:100%; height:100%;"></iframe></div>
+    <div id="main" style="display:none;"><iframe id="preview" src="<?=$page_preview?>" frameborder="0" style="width:100%; height:100%;" scrolling="no"></iframe></div>
 </div>
 <script>
     var htmleditor = "";
@@ -189,7 +190,7 @@ fieldset.form-group {
         var previewcodeFrame = document.getElementById('preview_code');
         var previewcode = previewcodeFrame.contentDocument || previewcodeFrame.contentWindow.document;
 
-        var template = $('#preview_template').val();
+        var template = jQuery('#preview_template').val();
         template = template.replace("{code}", code);
         previewcode.open();
         previewcode.write(template);
@@ -200,7 +201,7 @@ fieldset.form-group {
         rows = code.split("\n");
 
         indentcode = "";
-        $.each(rows, function(i, k) {
+        jQuery.each(rows, function(i, k) {
             indent = "";
             for(t=1; t<=num; t++) {
                 indent += "\t";
@@ -210,6 +211,21 @@ fieldset.form-group {
 
         return indentcode;
     }
+
+	function get_code() {
+        var body = "";
+        var css = "";
+        var js = "";
+
+        if (htmleditor) body = htmleditor.getValue();
+        if (csseditor) css = csseditor.getValue();
+        if (jseditor) js = jseditor.getValue();
+
+        var template = jQuery("#template").val();
+		template = template.replace("<code></code>", body);
+
+		return template;
+	}
 
     function run_update() {
         
@@ -227,26 +243,28 @@ fieldset.form-group {
 		var dt = new Date()
 		var page_preview = "<?php echo $page_preview; ?>?time="+dt.getTime();
 
-		//$("#preview").attr("src", page_preview);
+		jQuery("#preview").attr("src", page_preview);
 		//alert("reload");
 		//preview.location.reload();
-        var template = $("#template").val();
-;
-		//$('#preview').find("body").html(template);
+        var template = jQuery("#template").val();
+		//jQuery('#preview').find("body").html(template);
 		
         //template = template.replace("<body></body>", "<body>\n" + indent_tab(body, 1) + "</body>");
         //template = template.replace("<style></style>", "<style>\n" + indent_tab(css, 1) + "</style>");
         //template = template.replace("<script></"+"script>", "<script language='javascript'>\n" + indent_tab(js, 1) + "</"+"script>");
 		template = template.replace("<code></code>", body);
 
+		//document.getElementById('preview').test();
         //console.log(template);
-		$("#preview").contents().find('html').html(template);
-		//var context = $('iframe')[1].contentWindow.document;
-		//var $body = $('body', context);
-		//$body.html(template);
+		//jQuery("#preview").contents().find('body').html(template);
+		//var context = jQuery('iframe')[1].contentWindow.document;
+		//var jQuerybody = jQuery('body', context);
+		//jQuerybody.html(template);
+		//preview.srcdoc="Hello!!";
         //preview.open("text/html", "replace");
         //preview.write(template);
         //preview.close();
+
         update_preview(template);
     }
 
@@ -259,7 +277,7 @@ fieldset.form-group {
 
     var extraKeyOptions = {
         "Ctrl-Space": "autocomplete",
-        "Ctrl-S": function(instance) { $("#saveBtn").click(); },
+        "Ctrl-S": function(instance) { jQuery("#saveBtn").click(); },
         "Ctrl-/": "undo"
     }
 
@@ -297,28 +315,28 @@ fieldset.form-group {
     var max = 3600;
     var mainmin = 200;
 
-    $('#split-bar').mousedown(function(e) {
-        $('#preview').hide();
+    jQuery('#split-bar').mousedown(function(e) {
+        jQuery('#preview').hide();
         e.preventDefault();
-        $(document).mousemove(function(e) {
+        jQuery(document).mousemove(function(e) {
             e.preventDefault();
-            var x = e.pageX - $('#sidebar').offset().left;
-            if (x > min && x < max && e.pageX < ($(window).width() - mainmin)) {
-                $('#sidebar').css("width", x);
-                $('#main').css("margin-left", x);
+            var x = e.pageX - jQuery('#sidebar').offset().left;
+            if (x > min && x < max && e.pageX < (jQuery(window).width() - mainmin)) {
+                jQuery('#sidebar').css("width", x);
+                jQuery('#main').css("margin-left", x);
             }
         })
     });
 
-    $(document).mouseup(function(e) {
-        $('#preview').show();
-        $(document).unbind('mousemove');
+    jQuery(document).mouseup(function(e) {
+        jQuery('#preview').show();
+        jQuery(document).unbind('mousemove');
     });
 
-    $(document).ready(function(e) {
+    jQuery(document).ready(function(e) {
         load_project("workshop-1");
 
-        $('#runBtn').click(function() {
+        jQuery('#runBtn').click(function() {
             run_update();
         });
 
@@ -340,94 +358,94 @@ fieldset.form-group {
             view.removeClass("active");
         }            
         
-        $('.size-view').click(function(event) {
-            viewid = $(this).attr("id");
+        jQuery('.size-view').click(function(event) {
+            viewid = jQuery(this).attr("id");
             if(viewid=="invisible") {
                 var x = event.pageX;
-                view_unactive($("#desktop"));
-                view_unactive($("#tablet"));
-                view_unactive($("#mobile"));
-                view_active($("#invisible"));
+                view_unactive(jQuery("#desktop"));
+                view_unactive(jQuery("#tablet"));
+                view_unactive(jQuery("#mobile"));
+                view_active(jQuery("#invisible"));
 
-                $('#sidebar').css("width", "100%");
-                $('#main').css("display", "none");
-                //$('#main').css("margin-left", "auto");
+                jQuery('#sidebar').css("width", "100%");
+                jQuery('#main').css("display", "none");
+                //jQuery('#main').css("margin-left", "auto");
             } else if(viewid=="mobile") {
                 var x = event.pageX - 500;
-                view_unactive($("#desktop"));
-                view_unactive($("#tablet"));
-                view_unactive($("#invisible"));
-                view_active($("#mobile"));
+                view_unactive(jQuery("#desktop"));
+                view_unactive(jQuery("#tablet"));
+                view_unactive(jQuery("#invisible"));
+                view_active(jQuery("#mobile"));
 
-                $('#sidebar').css("width", x);
-                $('#main').css("margin-left", x);
-                $('#main').css("display", "");
+                jQuery('#sidebar').css("width", x);
+                jQuery('#main').css("margin-left", x);
+                jQuery('#main').css("display", "");
             } else if(viewid=="tablet") {
                 var x = event.pageX - 800;
-                view_unactive($("#desktop"));
-                view_unactive($("#mobile"));
-                view_unactive($("#invisible"));
-                view_active($("#tablet"));
+                view_unactive(jQuery("#desktop"));
+                view_unactive(jQuery("#mobile"));
+                view_unactive(jQuery("#invisible"));
+                view_active(jQuery("#tablet"));
 
-                $('#sidebar').css("width", x);
-                $('#main').css("margin-left", x);
-                $('#main').css("display", "");
+                jQuery('#sidebar').css("width", x);
+                jQuery('#main').css("margin-left", x);
+                jQuery('#main').css("display", "");
             } else if(viewid=="desktop") {
                 var x = event.pageX - 1000;
-                view_unactive($("#mobile"));
-                view_unactive($("#tablet"));
-                view_unactive($("#invisible"));
-                view_active($("#desktop"));
+                view_unactive(jQuery("#mobile"));
+                view_unactive(jQuery("#tablet"));
+                view_unactive(jQuery("#invisible"));
+                view_active(jQuery("#desktop"));
 
-                $('#sidebar').css("width", x);
-                $('#main').css("margin-left", x);  
-                $('#main').css("display", "");
+                jQuery('#sidebar').css("width", x);
+                jQuery('#main').css("margin-left", x);  
+                jQuery('#main').css("display", "");
             }
         });
 
-        $('.code-sheet').click(function() {
-            sheetid = $(this).attr("id");
+        jQuery('.code-sheet').click(function() {
+            sheetid = jQuery(this).attr("id");
             if (sheetid == "html_code_sheet") {
-                editor_unactive(jseditor, $("#js_code_sheet"));
-                editor_unactive(csseditor, $("#css_code_sheet"));
-                editor_active(htmleditor, $("#html_code_sheet"));
+                editor_unactive(jseditor, jQuery("#js_code_sheet"));
+                editor_unactive(csseditor, jQuery("#css_code_sheet"));
+                editor_active(htmleditor, jQuery("#html_code_sheet"));
                 
             } else if (sheetid == "css_code_sheet") {
-                editor_unactive(jseditor, $("#js_code_sheet"));
-                editor_unactive(htmleditor, $("#html_code_sheet"));
-                editor_active(csseditor, $("#css_code_sheet"));
+                editor_unactive(jseditor, jQuery("#js_code_sheet"));
+                editor_unactive(htmleditor, jQuery("#html_code_sheet"));
+                editor_active(csseditor, jQuery("#css_code_sheet"));
             } else if (sheetid == "js_code_sheet") {
-                editor_unactive(htmleditor, $("#html_code_sheet"));
-                editor_unactive(csseditor, $("#css_code_sheet"));
-                editor_active(jseditor, $("#js_code_sheet"));
+                editor_unactive(htmleditor, jQuery("#html_code_sheet"));
+                editor_unactive(csseditor, jQuery("#css_code_sheet"));
+                editor_active(jseditor, jQuery("#js_code_sheet"));
             }
         });
         
-        $("select[name=project_template]").change(function() {
+        jQuery("select[name=project_template]").change(function() {
             
-            $.get('<?php echo base_url("project/get_template"); ?>/' + $(this).val(), function(data) {                    
-                $("#template").val(data);
+            jQuery.get('<?php echo base_url("project/get_template"); ?>/' + jQuery(this).val(), function(data) {                    
+                jQuery("#template").val(data);
             });
-            //$("#template").val
+            //jQuery("#template").val
         });
 
-        $("#viewcodeBtn").click(function() {
+        jQuery("#viewcodeBtn").click(function() {
             run_update();
         });
 
-        $("#saveBtn").click(function() {
+        jQuery("#saveBtn").click(function() {
             //console.log('<?php echo site_url("project/save"); ?>');
 	        run_update();
 
-            var mode = $("input[name=mode]").val();
-            var projectname = $("input[name=project_name]").val();
-            $.post('<?php echo site_url("project/save"); ?>', 
+            var mode = jQuery("input[name=mode]").val();
+            var projectname = jQuery("input[name=project_name]").val();
+            jQuery.post('<?php echo site_url("project/save"); ?>', 
             {
                 mode : mode,
                 project_name : projectname,
-                template : $("select[name=project_template]").val(),
+                template : jQuery("select[name=project_template]").val(),
                 files : {
-                    template : $('#preview_template').val(),
+                    template : jQuery('#preview_template').val(),
                     html : htmleditor.getValue(),
                     css : csseditor.getValue(),
                     js : jseditor.getValue(),
@@ -449,6 +467,6 @@ fieldset.form-group {
             });
         });
 
-        $(".size-view.active").click();
+        jQuery(".size-view.active").click();
     })
 </script>
