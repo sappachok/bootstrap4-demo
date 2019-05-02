@@ -47,10 +47,10 @@ class Project extends CI_Controller {
 			//echo $this->project_dir;
 			//echo "config: ".$this->boardcast_file;
 			if(!file_exists($this->project_dir)) {
-				echo "sss".$this->project_dir;
+				//echo $this->project_dir;
 				if(!@mkdir($this->project_dir, 0775, true))
 				{
-					echo "Create Project Folder Success!!<br>";
+					echo "Create Project Folder Failed!!<br>";
 				} 
 			}
 	}
