@@ -20,7 +20,7 @@ class Project extends CI_Controller {
 	 */
 	public $project_dir = "";
 	public $zip_dir = "";
-	public $boardcast_host = "https://ict.nstru.ac.th/bootstrap4-tutor/editor";
+	public $boardcast_url = "https://ict.nstru.ac.th/bootstrap4-tutor/editor/index.php/boardcast";
 	public $boardcast_file = "boardcast.json";
 
 	public $template = Array(
@@ -43,7 +43,7 @@ class Project extends CI_Controller {
 			$this->zip_dir = $base_dir.'/zip';
 			$this->project_dir = $base_dir.'/projects';
 			//echo $this->project_dir;
-			$this->boardcast_file = $base_dir.'/'.$this->boardcast_file; 
+			//$this->boardcast_file = $base_dir.'/'.$this->boardcast_file; 
 			//echo $this->project_dir;
 			//echo "config: ".$this->boardcast_file;
 			if(!file_exists($this->project_dir)) {
@@ -85,7 +85,6 @@ class Project extends CI_Controller {
 		} else {
 			$project_name = $_GET["p"];			
 			if(!@file_exists($this->project_dir."/".$_GET["p"]."/config.json")) {
-				echo $this->project_dir."/".$_GET["p"]."/config.json";
 				echo "Cannot load config file!!<br>";
 				return false;
 			}
@@ -115,14 +114,13 @@ class Project extends CI_Controller {
 		$this->view_template($data);
 		
 		$start = date("d-m-Y H:i:s");
-		if(@$_GET["p"]) $this->set_boardcast(Array("project_id"=>$_GET["p"],"template"=>$project_config->template,"start"=>$start));
+		if(@$_GET["p"]) $this->set_boardcast(Array("project_id"=>str_replace("/","",$_GET["p"]),"template"=>$project_config->template,"start"=>$start));
 	}
 
 	function manage() {
 		$data = Array();
 		$map = directory_map($this->project_dir, 1);
 		$myproject = Array();
-		
 		foreach($map as $dir => $val) {
 			$myproject[] = str_replace("\\","",$val);
 		}
@@ -151,21 +149,36 @@ class Project extends CI_Controller {
 		echo $template;
 	}
 
-	function zip() {
-		$project_name = @$_POST["project_name"];
-		$project_name = "My Blog";
+	function zip($pname) {
+		if($pname == "") return false;
+
+		$pname = path_decode($pname);
+		//$project_name = "Test";
 		$this->load->library('zip');
 
 		if(!@file_exists($this->zip_dir)) mkdir($this->zip_dir, 0775, TRUE);
 
-		$target_dir = $this->project_dir."/".$project_name;
+		$target_dir = $this->project_dir."/".$pname;
+
+		if(!@file_exists($target_dir)) return false;
+
+		
 
 		$dir = $this->get_dir($target_dir);
 
-		var_dump($dir);
-		//echo $target_dir;
+		foreach($dir as $val) {
+			//echo $val."<br>";
+			if(is_dir($target_dir."/".$val)) {
+				$this->zip->add_dir($val);
+				//echo $val."<br>";
+			} else {
+				//echo $val."<br>";
+				$data = file_get_contents($target_dir."/".$val);
+				$this->zip->add_data($val, $data);
+			}
+		}
 
-		//$this->zip->download('my_code.zip');
+		$this->zip->download($pname.'-'.date('Ymd-His').'.zip');
 	}
 
 	function get_dir($target_dir, $root="", $data="") {
@@ -175,7 +188,7 @@ class Project extends CI_Controller {
 			if(!is_array($val)) {
 				$path = $root.$val;
 				//echo $path."<br>";
-				$data[$path] = $path;
+				if($val!="prev.php") $data[$path] = $path;
 				//$data = file_get_contents($target_dir."/".$val);
 				//$this->zip->add_data($val, $data);
 			} else {			
@@ -183,7 +196,7 @@ class Project extends CI_Controller {
 				//echo $path."<br>";
 				$data[$path] = $path;
 				//$this->zip($name, $val);
-				$data = $this->get_dir($target_dir."/".$name, $path);
+				$data = array_merge($data, $this->get_dir($target_dir."/".$name, $path));
 			}
 			//$data = file_get_contents($target_dir."/".$val);
 			//$this->zip->add_data($val, $data);
@@ -354,10 +367,10 @@ class Project extends CI_Controller {
 	function set_boardcast($config) {
 		$now = date("d-m-Y H:i:s");
 		$data = json_encode(Array(
-			"project_id"=>str_replace("/","",$config["project_id"]),
-			"template"=>$config["template"],
-			"start"=>$now,
-			"last_update"=>$now
+			"project_id"=>$config["project_id"],
+			"start"=>$config["project_id"],
+			"last_update"=>$now,
+			"template"=>$config["template"]
 			));
 		//var_dump($data);
 
@@ -381,16 +394,23 @@ class Project extends CI_Controller {
 		$project_id = $boardcast_config->project_id;
 
 		$load_project = $project_id;
-		$project_config = json_decode(file_get_contents($this->boardcast_host."/".$project_id."/config.json"));
-		var_dump($project_config);
-		return false;
+		//echo $this->boardcast_host."/".$this->boardcast_file;
+
+		$project_config = file_get_contents($this->boardcast_url);
+		//echo $this->boardcast_url;
+		$project_data = unserialize(base64_decode($project_config));
+		//var_dump($project_data);
+		//return false;
+		//return false;
 		$data["mode"] = "read";
-		$data["project"] = $this->load_project($load_project);
-		$data["project_config"] = $project_config;
-		$data["project_name"] = $load_project;
-		$data["template"] = $this->load->view($this->template[$project_config->template], null, true);
+		$data["project_data"] = $project_data; //$this->load_project($load_project);
+		$data["source_code"] = $project_data["source_code"]; //$this->load_project($load_project);
+		//$data["project_config"] = $project_config;
+		$data["project_name"] = $project_data["project_name"];
+		$data["template"] = "<code></code>";
+		$data["page_preview"] = $project_data["preview_url"];
 		$data["preview_template"] = $this->get_preview_template(); //$this->load->view("preview_template", $data, true);
-		$data["project_template"] = $project_config->template;
+		$data["project_template"] = $project_data["template"];
 
 		//$this->load->view('index', $data);
 		
@@ -403,7 +423,7 @@ class Project extends CI_Controller {
 	}
 
 	function view_template($_data) {
-		
+
 		$map = directory_map($this->project_dir, 1);
 		$myproject = Array();
 		if($map)

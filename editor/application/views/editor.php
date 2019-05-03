@@ -99,7 +99,9 @@ fieldset.form-group {
     <p>
         <div class="form-group">
         <button id="runBtn" type="button" class="btn btn-success"><i class="fas fa-play-circle"></i> Run</button>
-		<button type="button" class="btn btn-dark"><i class="fas fa-download"></i> Download</button>
+        <a href="<?php echo site_url("project/zip"); ?>/<?php echo path_encode($project_name); ?>" class="btn btn-dark" target="_blank"><i class="fas fa-download"></i> Download</a>
+
+		<!--<button type="button" class="btn btn-dark"><i class="fas fa-download"></i> Download</button>-->
         <!--<button id="viewcodeBtn" type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal"><i class="fas fa-code"></i> View Code</button>-->
         <!-- Button to Open the Modal -->
 
