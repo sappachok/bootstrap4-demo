@@ -114,7 +114,7 @@ class Project extends CI_Controller {
 		$this->view_template($data);
 		
 		$start = date("d-m-Y H:i:s");
-		if(@$_GET["p"]) $this->set_boardcast(Array("project_id"=>$_GET["p"],"start"=>$start));
+		if(@$_GET["p"]) $this->set_boardcast(Array("project_id"=>str_replace("/","",$_GET["p"]),"template"=>$project_config->template,"start"=>$start));
 	}
 
 	function manage() {
@@ -149,21 +149,36 @@ class Project extends CI_Controller {
 		echo $template;
 	}
 
-	function zip() {
-		$project_name = @$_POST["project_name"];
-		$project_name = "My Blog";
+	function zip($pname) {
+		if($pname == "") return false;
+
+		$pname = path_decode($pname);
+		//$project_name = "Test";
 		$this->load->library('zip');
 
 		if(!@file_exists($this->zip_dir)) mkdir($this->zip_dir, 0775, TRUE);
 
-		$target_dir = $this->project_dir."/".$project_name;
+		$target_dir = $this->project_dir."/".$pname;
+
+		if(!@file_exists($target_dir)) return false;
+
+		
 
 		$dir = $this->get_dir($target_dir);
 
-		var_dump($dir);
-		//echo $target_dir;
+		foreach($dir as $val) {
+			//echo $val."<br>";
+			if(is_dir($target_dir."/".$val)) {
+				$this->zip->add_dir($val);
+				//echo $val."<br>";
+			} else {
+				//echo $val."<br>";
+				$data = file_get_contents($target_dir."/".$val);
+				$this->zip->add_data($val, $data);
+			}
+		}
 
-		//$this->zip->download('my_code.zip');
+		$this->zip->download($pname.'-'.date('Ymd-His').'.zip');
 	}
 
 	function get_dir($target_dir, $root="", $data="") {
@@ -173,7 +188,7 @@ class Project extends CI_Controller {
 			if(!is_array($val)) {
 				$path = $root.$val;
 				//echo $path."<br>";
-				$data[$path] = $path;
+				if($val!="prev.php") $data[$path] = $path;
 				//$data = file_get_contents($target_dir."/".$val);
 				//$this->zip->add_data($val, $data);
 			} else {			
@@ -181,7 +196,7 @@ class Project extends CI_Controller {
 				//echo $path."<br>";
 				$data[$path] = $path;
 				//$this->zip($name, $val);
-				$data = $this->get_dir($target_dir."/".$name, $path);
+				$data = array_merge($data, $this->get_dir($target_dir."/".$name, $path));
 			}
 			//$data = file_get_contents($target_dir."/".$val);
 			//$this->zip->add_data($val, $data);
@@ -354,7 +369,8 @@ class Project extends CI_Controller {
 		$data = json_encode(Array(
 			"project_id"=>$config["project_id"],
 			"start"=>$config["project_id"],
-			"last_update"=>$now
+			"last_update"=>$now,
+			"template"=>$config["template"]
 			));
 		//var_dump($data);
 
