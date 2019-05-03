@@ -15,24 +15,28 @@
 
 <script src="<?php echo base_url(); ?>/../../codemirror/mode/htmlmixed/htmlmixed.js"></script>
 <style>
+body {
+    min-width: 1200px;
+}
 .CodeMirror {
     border-top: 1px solid #888;
     border-bottom: 1px solid #888;
-    height: 500px;
-    background-color: #ccffff;
+    height: 480px;
+    background-color: #eeeeee;
     font-size: 14px;
 }
 
 #main {
     border: 1px solid #888;
-    margin-left: auto;
-    height: 500px;
+    margin-left: 420px;
+    height: 480px;
+    /*width: 75%;*/
 }
 
 #sidebar {
-    width: 100%;
+    width: 420px;
     float: left;
-    height: 500px;
+    height: 480px;
 }
 
 #split-bar {
@@ -71,53 +75,14 @@ fieldset.form-group {
     border:1px solid #dddddd;
 }
 </style>
-<br>
+
+
 <div class="container-fluid">
 <div class="row">
-    <div class="col-12"> 
-		<h2>Code Boardcast</h2>
-	</div>
-	<hr>
     <div class="col-6"> 
     <p>
         <div class="input-group">
-            <input type="text" name="project_name" class="form-control" value="<?php echo $project_name; ?>" readonly>
-        </div>
-    </p>
-    </div>
-    <div class="col-6">
-    <p>
-        <div class="form-group">
-        <button id="runBtn" type="button" class="btn btn-success"><i class="fas fa-play-circle"></i> Run</button>
-        <button id="viewcodeBtn" type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal"><i class="fas fa-code"></i> View Code</button>            
-        <!-- Button to Open the Modal -->
-
-        <!-- The Modal -->
-        <div class="modal" id="myModal">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title">Source Code Preview</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-
-            <!-- Modal body -->
-            <div class="modal-body">
-                <iframe id="preview_code" frameborder="0" style="width:100%; height:520px;"></iframe>
-                <textarea id="preview_template" style="display:none;"><?php echo htmlspecialchars($preview_template); ?></textarea>
-            </div>
-
-            <!-- Modal footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
-
-            </div>
-        </div>
-        </div>
-
+			<h2><?php echo $project_name; ?></h2>
         </div>
     </p>
     </div>
@@ -132,6 +97,7 @@ fieldset.form-group {
             Array(
                 "bootstrap4"=>"Bootstrap 4",
                 "html5"=>"HTML 5",
+                "blank"=>"Blank",
             ),
             $project_template, "class='form-control'");             
         ?>
@@ -149,8 +115,8 @@ fieldset.form-group {
         </div>
         <div class="filetype-menu float-right">
             <ul>
-                <li id="invisible" class="size-view active"><i class="fas fa-ban"></i></li>
-                <li id="desktop" class="size-view"><i class="fas fa-desktop"></i></li>
+                <li id="invisible" class="size-view"><i class="fas fa-ban"></i></li>
+                <li id="desktop" class="size-view active"><i class="fas fa-desktop"></i></li>
                 <li id="tablet" class="size-view"><i class="fas fa-tablet-alt"></i></li>
                 <li id="mobile" class="size-view"><i class="fas fa-mobile-alt"></i></li>
             </ul>
@@ -161,13 +127,14 @@ fieldset.form-group {
         <div id="split-bar"></div>
         <form>
             <div id="test"></div>
-            <textarea id="htmlcode" name="htmlcode" style="display:none"><?php echo ($project["html"]) ? $project["html"] : "" ?></textarea>
-            <textarea id="csscode" name="csscode" style="display:none"><?php echo ($project["css"]) ? $project["css"] : "" ?></textarea>
-            <textarea id="jscode" name="jscode" style="display:none"><?php echo ($project["js"]) ? $project["js"] : "" ?></textarea>
+            <textarea id="htmlcode" name="htmlcode" style="display:none"><?php echo ($source_code["html"]) ? $source_code["html"] : "" ?></textarea>
+            <textarea id="csscode" name="csscode" style="display:none"><?php echo ($source_code["css"]) ? $source_code["css"] : "" ?></textarea>
+            <textarea id="jscode" name="jscode" style="display:none"><?php echo ($source_code["js"]) ? $source_code["js"] : "" ?></textarea>
             <textarea id="template" name="template" style="display:none"><?php echo $template; ?></textarea>
         </form>
     </div>
-    <div id="main" style="display:none"><iframe id="preview" frameborder="0" style="width:100%; height:100%;"></iframe></div>
+    <div id="main" style="display:none;"><iframe id="preview" src="<?=$page_preview?>" frameborder="0" style="width:100%; height:100%;"></iframe></div>
+
 </div>
 <script>
     var htmleditor = "";
@@ -177,20 +144,19 @@ fieldset.form-group {
     function update_preview(code) {
         var previewcodeFrame = document.getElementById('preview_code');
         var previewcode = previewcodeFrame.contentDocument || previewcodeFrame.contentWindow.document;
-        //$("#preview_code").val(code);
-        //$("#preview_code").html(code);
-        var template = $('#preview_template').val();
-		//console.log(template);
+
+        var template = jQuery('#preview_template').val();
         template = template.replace("{code}", code);
         previewcode.open();
         previewcode.write(template);
-        previewcode.close();            
+        previewcode.close();
     }
+
     function indent_tab(code, num) {
         rows = code.split("\n");
 
         indentcode = "";
-        $.each(rows, function(i, k) {
+        jQuery.each(rows, function(i, k) {
             indent = "";
             for(t=1; t<=num; t++) {
                 indent += "\t";
@@ -200,6 +166,22 @@ fieldset.form-group {
 
         return indentcode;
     }
+
+	function get_code() {
+        var body = "";
+        var css = "";
+        var js = "";
+
+        if (htmleditor) body = htmleditor.getValue();
+        if (csseditor) css = csseditor.getValue();
+        if (jseditor) js = jseditor.getValue();
+
+        var template = jQuery("#template").val();
+		template = template.replace("<code></code>", body);
+
+		return template;
+	}
+
     function run_update() {
         
         var body = "";
@@ -213,17 +195,31 @@ fieldset.form-group {
         var previewFrame = document.getElementById('preview');
         var preview = previewFrame.contentDocument || previewFrame.contentWindow.document;
 
-        var template = $("#template").val();
-		//console.log(template);
-        template = template.replace("<body></body>", "<body>\n" + indent_tab(body, 1) + "</body>");
-        template = template.replace("<style></style>", "<style>\n" + indent_tab(css, 1) + "</style>");
-        template = template.replace("<script></"+"script>", "<script language='javascript'>\n" + indent_tab(js, 1) + "</"+"script>");
+		var dt = new Date()
+
+		//jQuery("#preview").attr("src", page_preview);
+		//alert("reload");
+		//preview.location.reload();
+        var template = jQuery("#template").val();
+		//jQuery('#preview').find("body").html(template);
+		
+        //template = template.replace("<body></body>", "<body>\n" + indent_tab(body, 1) + "</body>");
+        //template = template.replace("<style></style>", "<style>\n" + indent_tab(css, 1) + "</style>");
+        //template = template.replace("<script></"+"script>", "<script language='javascript'>\n" + indent_tab(js, 1) + "</"+"script>");
+		//template = template.replace("<code></code>", body);
+
+		//document.getElementById('preview').test();
         //console.log(template);
-        preview.open();
-        preview.write(template);
-        preview.close();
-        console.log(template);
-        update_preview(template);
+		//jQuery("#preview").contents().find('body').html(template);
+		//var context = jQuery('iframe')[1].contentWindow.document;
+		//var jQuerybody = jQuery('body', context);
+		//jQuerybody.html(template);
+		//preview.srcdoc="Hello!!";
+        //preview.open("text/html", "replace");
+        //preview.write(template);
+        //preview.close();
+
+        //update_preview(template);
     }
 
     var loader = 1;
@@ -231,18 +227,15 @@ fieldset.form-group {
         initHtmlEditor();
         initCssEditor();
         initJsEditor();
-
-        run_update();
     }
 
     var extraKeyOptions = {
         "Ctrl-Space": "autocomplete",
-        "Ctrl-S": function(instance) { $("#saveBtn").click(); },
+        "Ctrl-S": function(instance) { jQuery("#saveBtn").click(); },
         "Ctrl-/": "undo"
     }
 
     function initHtmlEditor() {
-
         htmleditor = CodeMirror.fromTextArea(document.getElementById("htmlcode"), {
             lineNumbers: true,
             extraKeys: extraKeyOptions,
@@ -251,7 +244,6 @@ fieldset.form-group {
     };
 
     function initCssEditor() {
-
         csseditor = CodeMirror.fromTextArea(document.getElementById("csscode"), {
             lineNumbers: true,
             extraKeys: extraKeyOptions,
@@ -263,7 +255,6 @@ fieldset.form-group {
     };
 
     function initJsEditor() {
-
         jseditor = CodeMirror.fromTextArea(document.getElementById("jscode"), {
             lineNumbers: true,
             extraKeys: extraKeyOptions,
@@ -275,35 +266,34 @@ fieldset.form-group {
         });
 
         jseditor.hide();
-
     };
 
     var min = 300;
     var max = 3600;
     var mainmin = 200;
 
-    $('#split-bar').mousedown(function(e) {
-        $('#preview').hide();
+    jQuery('#split-bar').mousedown(function(e) {
+        jQuery('#preview').hide();
         e.preventDefault();
-        $(document).mousemove(function(e) {
+        jQuery(document).mousemove(function(e) {
             e.preventDefault();
-            var x = e.pageX - $('#sidebar').offset().left;
-            if (x > min && x < max && e.pageX < ($(window).width() - mainmin)) {
-                $('#sidebar').css("width", x);
-                $('#main').css("margin-left", x);
+            var x = e.pageX - jQuery('#sidebar').offset().left;
+            if (x > min && x < max && e.pageX < (jQuery(window).width() - mainmin)) {
+                jQuery('#sidebar').css("width", x);
+                jQuery('#main').css("margin-left", x);
             }
         })
     });
 
-    $(document).mouseup(function(e) {
-        $('#preview').show();
-        $(document).unbind('mousemove');
+    jQuery(document).mouseup(function(e) {
+        jQuery('#preview').show();
+        jQuery(document).unbind('mousemove');
     });
 
-    $(document).ready(function() {
+    jQuery(document).ready(function(e) {
         load_project("workshop-1");
 
-        $('#runBtn').click(function() {
+        jQuery('#runBtn').click(function() {
             run_update();
         });
 
@@ -325,80 +315,81 @@ fieldset.form-group {
             view.removeClass("active");
         }            
         
-        $('.size-view').click(function(event ) {
-            viewid = $(this).attr("id");
-            
+        jQuery('.size-view').click(function(event) {
+            viewid = jQuery(this).attr("id");
             if(viewid=="invisible") {
                 var x = event.pageX;
-                view_unactive($("#desktop"));
-                view_unactive($("#tablet"));
-                view_unactive($("#mobile"));
-                view_active($("#invisible"));
+                view_unactive(jQuery("#desktop"));
+                view_unactive(jQuery("#tablet"));
+                view_unactive(jQuery("#mobile"));
+                view_active(jQuery("#invisible"));
 
-                $('#sidebar').css("width", "100%");
-                $('#main').css("display", "none");
-                //$('#main').css("margin-left", "auto");
+                jQuery('#sidebar').css("width", "100%");
+                jQuery('#main').css("display", "none");
+                //jQuery('#main').css("margin-left", "auto");
             } else if(viewid=="mobile") {
                 var x = event.pageX - 500;
-                view_unactive($("#desktop"));
-                view_unactive($("#tablet"));
-                view_unactive($("#invisible"));
-                view_active($("#mobile"));
+                view_unactive(jQuery("#desktop"));
+                view_unactive(jQuery("#tablet"));
+                view_unactive(jQuery("#invisible"));
+                view_active(jQuery("#mobile"));
 
-                $('#sidebar').css("width", x);
-                $('#main').css("margin-left", x);
-                $('#main').css("display", "");
+                jQuery('#sidebar').css("width", x);
+                jQuery('#main').css("margin-left", x);
+                jQuery('#main').css("display", "");
             } else if(viewid=="tablet") {
                 var x = event.pageX - 800;
-                view_unactive($("#desktop"));
-                view_unactive($("#mobile"));
-                view_unactive($("#invisible"));
-                view_active($("#tablet"));
+                view_unactive(jQuery("#desktop"));
+                view_unactive(jQuery("#mobile"));
+                view_unactive(jQuery("#invisible"));
+                view_active(jQuery("#tablet"));
 
-                $('#sidebar').css("width", x);
-                $('#main').css("margin-left", x);
-                $('#main').css("display", "");
+                jQuery('#sidebar').css("width", x);
+                jQuery('#main').css("margin-left", x);
+                jQuery('#main').css("display", "");
             } else if(viewid=="desktop") {
                 var x = event.pageX - 1000;
-                view_unactive($("#mobile"));
-                view_unactive($("#tablet"));
-                view_unactive($("#invisible"));
-                view_active($("#desktop"));
+                view_unactive(jQuery("#mobile"));
+                view_unactive(jQuery("#tablet"));
+                view_unactive(jQuery("#invisible"));
+                view_active(jQuery("#desktop"));
 
-                $('#sidebar').css("width", x);
-                $('#main').css("margin-left", x);
-                $('#main').css("display", "");
+                jQuery('#sidebar').css("width", x);
+                jQuery('#main').css("margin-left", x);  
+                jQuery('#main').css("display", "");
             }
         });
 
-        $('.code-sheet').click(function() {
-            sheetid = $(this).attr("id");
+        jQuery('.code-sheet').click(function() {
+            sheetid = jQuery(this).attr("id");
             if (sheetid == "html_code_sheet") {
-                editor_unactive(jseditor, $("#js_code_sheet"));
-                editor_unactive(csseditor, $("#css_code_sheet"));
-                editor_active(htmleditor, $("#html_code_sheet"));
+                editor_unactive(jseditor, jQuery("#js_code_sheet"));
+                editor_unactive(csseditor, jQuery("#css_code_sheet"));
+                editor_active(htmleditor, jQuery("#html_code_sheet"));
                 
             } else if (sheetid == "css_code_sheet") {
-                editor_unactive(jseditor, $("#js_code_sheet"));
-                editor_unactive(htmleditor, $("#html_code_sheet"));
-                editor_active(csseditor, $("#css_code_sheet"));
+                editor_unactive(jseditor, jQuery("#js_code_sheet"));
+                editor_unactive(htmleditor, jQuery("#html_code_sheet"));
+                editor_active(csseditor, jQuery("#css_code_sheet"));
             } else if (sheetid == "js_code_sheet") {
-                editor_unactive(htmleditor, $("#html_code_sheet"));
-                editor_unactive(csseditor, $("#css_code_sheet"));
-                editor_active(jseditor, $("#js_code_sheet"));
+                editor_unactive(htmleditor, jQuery("#html_code_sheet"));
+                editor_unactive(csseditor, jQuery("#css_code_sheet"));
+                editor_active(jseditor, jQuery("#js_code_sheet"));
             }
         });
         
-        $("select[name=project_template]").change(function() {
+        jQuery("select[name=project_template]").change(function() {
             
-            $.get('<?php echo base_url("project/get_template"); ?>/' + $(this).val(), function(data) {                    
-                $("#template").val(data);
+            jQuery.get('<?php echo base_url("project/get_template"); ?>/' + jQuery(this).val(), function(data) {                    
+                jQuery("#template").val(data);
             });
-            //$("#template").val
+            //jQuery("#template").val
         });
 
-        $("#viewcodeBtn").click(function() {
+        jQuery("#viewcodeBtn").click(function() {
             run_update();
         });
+
+        jQuery(".size-view.active").click();
     })
 </script>

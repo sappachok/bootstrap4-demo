@@ -20,7 +20,7 @@ class Project extends CI_Controller {
 	 */
 	public $project_dir = "";
 	public $zip_dir = "";
-	public $boardcast_host = "https://ict.nstru.ac.th/bootstrap4-tutor/editor";
+	public $boardcast_url = "https://ict.nstru.ac.th/bootstrap4-tutor/editor/index.php/boardcast";
 	public $boardcast_file = "boardcast.json";
 
 	public $template = Array(
@@ -43,7 +43,7 @@ class Project extends CI_Controller {
 			$this->zip_dir = $base_dir.'/zip';
 			$this->project_dir = $base_dir.'/projects';
 			//echo $this->project_dir;
-			$this->boardcast_file = $base_dir.'/'.$this->boardcast_file; 
+			//$this->boardcast_file = $base_dir.'/'.$this->boardcast_file; 
 			//echo $this->project_dir;
 			//echo "config: ".$this->boardcast_file;
 			if(!file_exists($this->project_dir)) {
@@ -378,16 +378,23 @@ class Project extends CI_Controller {
 		$project_id = $boardcast_config->project_id;
 
 		$load_project = $project_id;
-		$project_config = json_decode(file_get_contents($this->boardcast_host."/".$project_id."/config.json"));
-		var_dump($project_config);
-		return false;
+		//echo $this->boardcast_host."/".$this->boardcast_file;
+
+		$project_config = file_get_contents($this->boardcast_url);
+		//echo $this->boardcast_url;
+		$project_data = unserialize(base64_decode($project_config));
+		//var_dump($project_data);
+		//return false;
+		//return false;
 		$data["mode"] = "read";
-		$data["project"] = $this->load_project($load_project);
-		$data["project_config"] = $project_config;
-		$data["project_name"] = $load_project;
-		$data["template"] = $this->load->view($this->template[$project_config->template], null, true);
+		$data["project_data"] = $project_data; //$this->load_project($load_project);
+		$data["source_code"] = $project_data["source_code"]; //$this->load_project($load_project);
+		//$data["project_config"] = $project_config;
+		$data["project_name"] = $project_data["project_name"];
+		$data["template"] = "<code></code>";
+		$data["page_preview"] = $project_data["preview_url"];
 		$data["preview_template"] = $this->get_preview_template(); //$this->load->view("preview_template", $data, true);
-		$data["project_template"] = $project_config->template;
+		$data["project_template"] = $project_data["template"];
 
 		//$this->load->view('index', $data);
 		
@@ -403,7 +410,7 @@ class Project extends CI_Controller {
 
 		$map = directory_map($this->project_dir, 1);
 		$myproject = Array();
-		if($myproject)
+		if($map)
 		foreach($map as $dir => $val) {
 			$myproject[] = str_replace("\\","",$val);
 		}
