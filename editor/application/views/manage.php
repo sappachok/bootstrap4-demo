@@ -72,7 +72,7 @@ jQuery('.save-btn').click(function() {
     var pname = jQuery(this).closest("form").attr("data-pname");
     var newname = jQuery("input[data-pid="+pid+"]").val();
     
-    $.post('<?php echo site_url("project/rename"); ?>',
+    jQuery.post('<?php echo site_url("project/rename"); ?>',
     {
         pid : pid,
         pname : pname,

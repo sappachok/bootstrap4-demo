@@ -4,11 +4,11 @@
     <title>Bootstrap Tutor</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="../../assets/bootstrap4/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../../assets/fontawesome5/css/all.min.css">
-    <script src="../../assets/jquery/3.3.1/jquery.min.js"></script>
-    <script src="../../assets/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="../../assets/bootstrap4/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../../../assets/bootstrap4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../../assets/fontawesome5/css/all.min.css">
+    <script src="../../../assets/jquery/3.3.1/jquery.min.js"></script>
+    <script src="../../../assets/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="../../../assets/bootstrap4/js/bootstrap.min.js"></script>
 </head>
 <body>
 <iframe id="frm_preview" frameborder="0" style="height:480px; width:100%;"></iframe>

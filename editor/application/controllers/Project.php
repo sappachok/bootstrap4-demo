@@ -85,6 +85,7 @@ class Project extends CI_Controller {
 		} else {
 			$project_name = $_GET["p"];			
 			if(!@file_exists($this->project_dir."/".$_GET["p"]."/config.json")) {
+				echo $this->project_dir."/".$_GET["p"]."/config.json";
 				echo "Cannot load config file!!<br>";
 				return false;
 			}
@@ -114,13 +115,14 @@ class Project extends CI_Controller {
 		$this->view_template($data);
 		
 		$start = date("d-m-Y H:i:s");
-		if(@$_GET["p"]) $this->set_boardcast(Array("project_id"=>$_GET["p"],"start"=>$start));
+		if(@$_GET["p"]) $this->set_boardcast(Array("project_id"=>$_GET["p"],"template"=>$project_config->template,"start"=>$start));
 	}
 
 	function manage() {
 		$data = Array();
 		$map = directory_map($this->project_dir, 1);
 		$myproject = Array();
+		
 		foreach($map as $dir => $val) {
 			$myproject[] = str_replace("\\","",$val);
 		}
@@ -352,8 +354,9 @@ class Project extends CI_Controller {
 	function set_boardcast($config) {
 		$now = date("d-m-Y H:i:s");
 		$data = json_encode(Array(
-			"project_id"=>$config["project_id"],
-			"start"=>$config["project_id"],
+			"project_id"=>str_replace("/","",$config["project_id"]),
+			"template"=>$config["template"],
+			"start"=>$now,
 			"last_update"=>$now
 			));
 		//var_dump($data);
@@ -400,10 +403,10 @@ class Project extends CI_Controller {
 	}
 
 	function view_template($_data) {
-
+		
 		$map = directory_map($this->project_dir, 1);
 		$myproject = Array();
-		if($myproject)
+		if($map)
 		foreach($map as $dir => $val) {
 			$myproject[] = str_replace("\\","",$val);
 		}
