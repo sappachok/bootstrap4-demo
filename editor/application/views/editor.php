@@ -95,12 +95,13 @@ fieldset.form-group {
         </div>
     </p>
     </div>
-    <div class="col-6">
+    <div class="col-3">
     <p>
         <div class="form-group">
         <button id="runBtn" type="button" class="btn btn-success"><i class="fas fa-play-circle"></i> Run</button>
-		<!--<button id="downloadBtn" type="button" class="btn btn-dark"><i class="fas fa-download"></i> Download</button>-->
-		<a href="<?php echo site_url("project/zip"); ?>/<?php echo path_encode($project_name); ?>" class="btn btn-dark" target="_blank"><i class="fas fa-download"></i> Download</a>
+        <a href="<?php echo site_url("project/zip"); ?>/<?php echo path_encode($project_name); ?>" class="btn btn-dark" target="_blank"><i class="fas fa-download"></i> Download</a>
+
+		<!--<button type="button" class="btn btn-dark"><i class="fas fa-download"></i> Download</button>-->
         <!--<button id="viewcodeBtn" type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal"><i class="fas fa-code"></i> View Code</button>-->
         <!-- Button to Open the Modal -->
 
@@ -131,6 +132,13 @@ fieldset.form-group {
         </div>
 
         </div>
+    </p>
+    </div>
+    <div class="col-3">
+    <p>
+		<div class="form-group text-right">
+        <button id="collapeBtn" type="button" class="btn btn-default" data-toggle="collapse" data-target="#topnav">Navbar <i class="fas fa-angle-double-up"></i></button>
+		</div>
     </p>
     </div>
 </div>
@@ -434,17 +442,6 @@ fieldset.form-group {
             run_update();
         });
 
-		/*jQuery("#downloadBtn").click(function() {
-			jQuery.post('<?php echo site_url("project/zip"); ?>', 
-				{ 
-					project_name : jQuery("input[name=project_name]").val() 
-				},
-				function(data) {
-					console.log(data);	
-				}
-			);
-		});*/
-
         jQuery("#saveBtn").click(function() {
             //console.log('<?php echo site_url("project/save"); ?>');
 	        run_update();
@@ -478,6 +475,11 @@ fieldset.form-group {
                 console.log(data);
             });
         });
+		
+		jQuery("#collapeBtn").click(function() {
+			jQuery(this).find("i").toggleClass("fa-angle-double-up");
+			jQuery(this).find("i").toggleClass("fa-angle-double-down");
+		});
 
         jQuery(".size-view.active").click();
     })

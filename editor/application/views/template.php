@@ -12,6 +12,7 @@
 	<script>jQuery.noConflict();</script>
 </head>
 <body>
+<div id="topnav" class="collapse show">
 <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
         <a class="navbar-brand" href="<?php echo site_url(); ?>">Bootstrap 4 Tutor</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,15 +20,7 @@
             </button>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-            <!--
-                <li class="nav-item">
-                    <a class="nav-link" href="#load" data-toggle="modal" data-target="#myLoadModal">Load</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="<?php echo site_url("project/manage"); ?>">My Project</a>
-                </li>    
-            -->                  
+            <ul class="navbar-nav mr-auto">        
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							Project
@@ -57,7 +50,8 @@
                 </li>    
             </ul>
         </div>
-    </nav>    
+    </nav>
+	</div>
     <div class="modal" id="createModal">
             <div class="modal-dialog">
                 <div class="modal-content">

@@ -122,7 +122,7 @@ class Project extends CI_Controller {
 		$map = directory_map($this->project_dir, 1);
 		$myproject = Array();
 		foreach($map as $dir => $val) {
-			$myproject[] = str_replace("\\","",$val);
+			$myproject[] = str_replace("/","",$val);
 		}
 				
 		$data["project_library"] = $myproject;		
@@ -428,7 +428,7 @@ class Project extends CI_Controller {
 		$myproject = Array();
 		if($map)
 		foreach($map as $dir => $val) {
-			$myproject[] = str_replace("\\","",$val);
+			$myproject[] = str_replace("/","",$val);
 		}
 				
 		$this->load->library('parser');
