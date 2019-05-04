@@ -95,7 +95,7 @@ fieldset.form-group {
         </div>
     </p>
     </div>
-    <div class="col-6">
+    <div class="col-3">
     <p>
         <div class="form-group">
         <button id="runBtn" type="button" class="btn btn-success"><i class="fas fa-play-circle"></i> Run</button>
@@ -132,6 +132,13 @@ fieldset.form-group {
         </div>
 
         </div>
+    </p>
+    </div>
+    <div class="col-3">
+    <p>
+		<div class="form-group text-right">
+        <button id="collapeBtn" type="button" class="btn btn-default" data-toggle="collapse" data-target="#topnav">Navbar <i class="fas fa-angle-double-up"></i></button>
+		</div>
     </p>
     </div>
 </div>
@@ -468,6 +475,11 @@ fieldset.form-group {
                 console.log(data);
             });
         });
+		
+		jQuery("#collapeBtn").click(function() {
+			jQuery(this).find("i").toggleClass("fa-angle-double-up");
+			jQuery(this).find("i").toggleClass("fa-angle-double-down");
+		});
 
         jQuery(".size-view.active").click();
     })

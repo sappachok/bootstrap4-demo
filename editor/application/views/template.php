@@ -12,6 +12,7 @@
 	<script>jQuery.noConflict();</script>
 </head>
 <body>
+<div id="topnav" class="collapse show">
 <nav class="navbar navbar-expand-lg bg-dark navbar-dark">
         <a class="navbar-brand" href="<?php echo site_url(); ?>">Bootstrap 4 Tutor</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +50,8 @@
                 </li>    
             </ul>
         </div>
-    </nav>    
+    </nav>
+	</div>
     <div class="modal" id="createModal">
             <div class="modal-dialog">
                 <div class="modal-content">
