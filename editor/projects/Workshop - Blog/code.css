@@ -1,0 +1,39 @@
+.header {
+  display: block;
+  /*margin-top:20px;*/
+  padding-top: 50px;
+  background-color: #45869c;
+  color:white;
+  /*min-height: 400px;*/
+}
+
+.text-hilight {
+  font-family: 'Kanit', sans-serif;
+}
+
+.footer {
+  margin-top: 30px;
+  padding: 30px 0px;
+  background-color: #eeeeee;
+  min-height: 200px;
+}
+
+.header-text {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+.my-photo {}
+
+.section {
+  margin: 40px auto;
+  min-height: 300px;
+}
+
+.social-share {
+  font-size: 1.5em;
+}
+
+.logo {
+  font-size:30px;
+}

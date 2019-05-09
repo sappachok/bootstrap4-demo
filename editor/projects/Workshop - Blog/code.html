@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Bootstrap Example</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="assets/bootstrap4/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="assets/fontawesome5/css/all.min.css"/>
+    <link rel="stylesheet" href="code.css"/>
+	<link href="https://fonts.googleapis.com/css?family=Kanit|Mitr|Prompt" rel="stylesheet"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="assets/bootstrap4/js/bootstrap.min.js"></script>
+    <script src="code.js"></script>
+</head>
+<body style="height:1500px">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="#"><span class="text-info logo text-hilight">My Blog</span></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#"><i class="fas fa-home"></i> หน้าแรก <span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">บทความของฉัน</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">เกี่ยวกับฉัน
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">ประวัติ</a>
+                        <a class="dropdown-item" href="#">ชิ้นงาน / ผลงาน</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">การติดต่อ</a>
+                    </div>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="ค้นหา.." aria-label="Search">
+                <button class="btn btn-outline-info my-2 my-sm-0" type="submit"><i class="fas fa-search"></i>
+                    Search</button>
+            </form>
+        </div>
+	</div>
+    </nav>
+	<div class="header">
+    <div class="container">
+		<div class="row">
+			<div class="col-md-6 order-md-2">
+			<img src="images/programmer.png" class="img-fluid">
+			</div>
+			<div class="col-md-6 order-md-1">
+				<div class="header-text text-hilight">ยินดีต้อนรับสู่เว็บบล็อคของฉัน</div>
+				<p><span>เรียนรู้ และแลกเปลี่ยนความคิดเห็นเกี่ยวกับการพัฒนาเว็บไซต์ด้วย Bootstrap Framwork, CSS, JS และ JQuery</span></p>
+				<p><a href="#" class="btn btn-info">เรียนรู้การใช้งาน</a> <a href="#" class="btn btn-light">ดาวน์โหลด Bootstrap 4</a></p>
+			</div>
+		</div>
+    </div>
+	</div>
+
+    <div class="container section">
+        <h2 class="text-info text-hilight"><i class="fab fa-bootstrap"></i> เกี่ยวกับ Bootstrap</h2>
+        <hr>
+        <div class="row">
+            <div class="col-md-4">
+                <h3>Bootstrap คืออะไร ?</h3>
+                <p>คือ Front-end Framework ตัวหนึ่ง ที่จะช่วยให้การพัฒนาเว็บไซต์ของเราเร็วขึ้น ง่ายขึ้น
+                    และเป็นระบบมากขึ้น ซึ่งคำว่า Bootstrap นี้ในภาษาอังกฤษมันมักจะหมายถึง “สิ่งที่ช่วยทำให้ง่ายขึ้น”
+                    หรือ “สิ่งที่ทำได้ด้วยตัวของมันเอง” ซึ่งในที่นี้น่าจะหมายความว่า
+                    ถ้าเราใช้ Bootstrap แล้ว เราก็ไม่จำเป็นต้องไปหาอะไรมาเพิ่มอีก
+                </p>
+                <p><a href="#" class="btn btn-info">อ่านบทความนี้ต่อ <i class="fas fa-arrow-right"></i></a></p>
+            </div>
+            <div class="col-md-4">
+                <h3>มีอะไรบ้างใน Bootstrap?</h3>
+                <p>สิ่งที่ Bootstrap ให้มา มี 4 อย่าง คือ (1) Scaffolding grid system จำนวน 12 คอลัมน์, (2) Base CSS
+                    style sheets สำหรับ html elements พื้นฐาน เช่น typography, tables, forms และ images, (3) Components
+                    style sheets สำหรับสิ่งที่เราต้องใช้บ่อยๆ
+                    ไม่ว่าจะเป็น navigation, breadcrumbs รวมไปถึง pagination, (4) JavaScript jQuery plugins ต่างๆ
+                    ไม่ว่าจะเป็น modal, carousel หรือ tooltip
+                </p>
+                <p><a href="#" class="btn btn-info">อ่านบทความนี้ต่อ <i class="fas fa-arrow-right"></i></a></p>
+            </div>
+            <div class="col-md-4">
+                <h3>เตรียมพร้อมก่อนใช้ Bootstrap</h3>
+                <p>ให้เราไป Download Bootstrap มาติดตั้งก่อนครับ เมื่อเราแตกไฟล์ออกมา เราจะได้ 3 folders คือ css, img,
+                    js จากนั้นให้เราสร้างไฟล์ index.html ขึ้นมาครับ แล้วใส่โค้ด html ...</p>
+                <p><a href="#" class="btn btn-info">อ่านบทความนี้ต่อ <i class="fas fa-arrow-right"></i></a></p>
+            </div>
+        </div>
+    </div>
+
+	<div class="container section">
+		<div class="row">
+			<div class="col-md-6">
+			<h2 class="text-hilight text-info">Most popular</h2>
+			<p>Bootstrap the world’s most popular front-end component library</p>
+			</div>
+			<div class="col-md-6">
+				<img src="images/bootstrap.jpg" class="img-fluid">
+			</div>
+		</div>
+	</div>
+
+	<div class="container section">
+		<div class="row">
+			<div class="col-md-6 order-md-2">
+			<h2 class="text-hilight text-info">HTML, CSS, and JS</h2>
+			<p>an open source toolkit for developing with HTML, CSS, and JS. Quickly prototype your ideas or build your entire app with our Sass variables and mixins, responsive grid system, extensive prebuilt components, and powerful plugins built on jQuery
+			</p>
+			</div>
+			<div class="col-md-6 order-md-1">
+				<img src="images/html5.jpg" class="img-fluid">
+			</div>
+		</div>
+	</div>
+
+    <div class="container section">
+        <h2 class="text-info text-hilight"><i class="fas fa-address-card"></i> สมัครสมาชิก</h2>
+        <hr>
+        <div class="row">
+            <div class="col-sm-6">
+                <p>
+                    <label>ชื่อ</label>
+                    <input type="text" name="firstname" class="form-control" placeholder="กรุณาใส่ชื่อ">
+                </p>
+            </div>
+            <div class="col-sm-6">
+                <p>
+                    <label>นามสกุล</label>
+                    <input type="text" name="lastname" class="form-control" placeholder="กรุณาใส่นามสกุล">
+                </p>
+            </div>
+            <div class="col-sm-4">
+                <label>วันเดือนปี (เกิด)</label>
+                <div class="input-group">
+                    <select class="form-control">
+                        <option>วัน</option>
+                    </select>
+                    <select class="form-control">
+                        <option>เดือน</option>
+                    </select>
+                    <select class="form-control">
+                        <option>ปี พ.ศ.</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <p>
+                    <label>อีเมล</label>
+                    <input type="text" name="lastname" class="form-control" placeholder="กรุณาใส่อีเมล">
+                </p>
+            </div>
+            <div class="col-sm-4">
+                <p>
+                    <label>เบอร์มือถือ</label>
+                    <input type="text" name="lastname" class="form-control" placeholder="กรุณาใส่เบอร์มือถือ">
+                </p>
+            </div>
+            <div class="col-sm-12">
+                <p class="text-right">
+                    <button type="submit" class="btn btn-info">ลงทะเบียน</button>
+                </p>
+            </div>
+        </div>
+    </div>
+	<div class="footer">
+    <div class="container">
+		<div class="row">
+			<div class="col-md-3">
+				<p><b class="text-info logo text-hilight">My Blog</b></p>
+				<p class="social-share"><i class="fab fa-instagram"></i> <i class="fab fa-facebook-square"></i> <i class="fab fa-twitter"></i> <i class="fab fa-pinterest"></i></p>
+			</div>
+			<div class="col-md-9">
+				<b class="text-hilight">พัฒนาโดย สรรพโชค สิงหสุวรรณ</b><br>
+				อีเมล <a href="#">suppachok_sin@nstru.ac.th</a><br>
+				โทร. 0878935943
+			</div>
+		<div>
+    </div>
+	<div>
+</body>
+</html>
