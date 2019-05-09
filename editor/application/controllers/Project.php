@@ -141,6 +141,56 @@ class Project extends CI_Controller {
 		return $project;
 	}
 
+	function get_source_dir() {
+		$pid = $_POST["pid"];
+		$path = (@$_POST["path"]) ? $_POST["path"] : "";
+		//echo $pid;
+		if($path) $target_dir = $this->project_dir."/".$pid."/".$path;
+		else $target_dir = $this->project_dir."/".$pid;
+		$map = directory_map($target_dir, 2);
+		
+		$data["project_name"] = $pid;
+		$data["project_dir"] = $map;
+		$data["src_path"] = $path;
+
+		$this->load->view("source-dir", $data);
+	}
+
+	function create_dir() {
+		$pid = $_POST["pid"];
+		$folder_name = $_POST["folder_name"];
+		$path = (@$_POST["path"]) ? $_POST["path"] : "";
+
+		if(!$path) $target_dir = $this->project_dir."/".$pid."/".$folder_name;
+		else $target_dir = $this->project_dir."/".$pid."/".$path.$folder_name;
+
+		if(file_exists($target_dir)) {
+			echo "Folder has exists!!";
+		} else {
+			if(@mkdir($target_dir, 0775, true)) {
+				echo "Create Folder Success!!";
+			} else {
+				echo "Create Folder Failed!!";
+			}
+		}
+	}
+
+	function delete_dir() {
+		$pid = $_POST["pid"];
+		$path = $_POST["path"];
+		$target_dir = $this->project_dir."/".$pid."/".$path;
+
+		if(file_exists($target_dir)) {
+			if(@rmdir($target_dir)) {
+				echo "Folder Deleted!!";
+			} else {
+				echo "Delete Folder Failed!!";
+			}			
+		} else {
+			echo "Folder has not exists!!";
+		}
+	}	
+
 	function get_template($name="bootstrap4") {
 		if($name=="bootstrap4") $template = $this->load->view("bootstrap4_template", "", true);
 		else if($name=="html5") $template = $this->load->view("html5_template", "", true);

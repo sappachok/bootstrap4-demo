@@ -100,36 +100,55 @@ fieldset.form-group {
         <div class="form-group">
         <button id="runBtn" type="button" class="btn btn-success"><i class="fas fa-play-circle"></i> Run</button>
         <a href="<?php echo site_url("project/zip"); ?>/<?php echo path_encode($project_name); ?>" class="btn btn-dark" target="_blank"><i class="fas fa-download"></i> Download</a>
-
+        <button id="sourceBtn" type="button" class="btn btn-info" data-toggle="modal" data-target="#sourceModal" disabled><i class="far fa-folder"></i> Open Dir</button>
 		<!--<button type="button" class="btn btn-dark"><i class="fas fa-download"></i> Download</button>-->
         <!--<button id="viewcodeBtn" type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal"><i class="fas fa-code"></i> View Code</button>-->
         <!-- Button to Open the Modal -->
 
         <!-- The Modal -->
         <div class="modal" id="myModal">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
 
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h4 class="modal-title">Source Code Preview</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Source Code Preview</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
 
-            <!-- Modal body -->
-            <div class="modal-body">
-                <iframe id="preview_code" frameborder="0" style="width:100%; height:520px;"></iframe>
-                <textarea id="preview_template" style="display:none;"><?php echo $preview_template; ?></textarea>
-            </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <iframe id="preview_code" frameborder="0" style="width:100%; height:520px;"></iframe>
+                    <textarea id="preview_template" style="display:none;"><?php echo $preview_template; ?></textarea>
+                </div>
 
-            <!-- Modal footer -->
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
 
+                </div>
             </div>
         </div>
-        </div>
+
+        <div class="modal" id="sourceModal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Project Directory</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    
+                </div>
+
+                </div>
+            </div>
+        </div>        
 
         </div>
     </p>
@@ -343,6 +362,8 @@ fieldset.form-group {
     });
 
     jQuery(document).ready(function(e) {
+        var projectname = jQuery("input[name=project_name]").val();
+        
         load_project("workshop-1");
 
         jQuery('#runBtn').click(function() {
@@ -480,6 +501,20 @@ fieldset.form-group {
 			jQuery(this).find("i").toggleClass("fa-angle-double-up");
 			jQuery(this).find("i").toggleClass("fa-angle-double-down");
 		});
+
+        jQuery("#sourceBtn").removeAttr("disabled");
+        jQuery("#sourceBtn").click(function() {
+            source_dir_init();
+        });
+
+        function source_dir_init() 
+        {
+            var srcBodyModal = jQuery("#sourceModal").find(".modal-body");
+            srcBodyModal.html("Loading...");
+            jQuery.post('<?php echo site_url("project/get_source_dir"); ?>', { pid : projectname }, function(data) {
+                srcBodyModal.html(data);
+            });
+        }
 
         jQuery(".size-view.active").click();
     })
