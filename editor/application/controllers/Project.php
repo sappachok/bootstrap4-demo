@@ -153,6 +153,14 @@ class Project extends CI_Controller {
 		$data["project_dir"] = $map;
 		$data["src_path"] = $path;
 
+		$data["reserved_file"] = Array(
+			"code.html", "code.css", "code.js"
+		);
+
+		$data["hidden_file"] = Array( 
+			"config.json", "prev.php"
+		);
+
 		$this->load->view("source-dir", $data);
 	}
 
@@ -175,6 +183,27 @@ class Project extends CI_Controller {
 		}
 	}
 
+	function rename_dir() {
+		$pid = $_POST["pid"];
+		$path = $_POST["path"];
+		$fname = $_POST["fname"];
+		$newname = $_POST["newname"];
+
+		if($fname == "" || $newname=="") return false;
+
+		$target_dir = $this->project_dir."/".$pid."/".$path."".$fname;
+		$new = $this->project_dir."/".$pid."/".$path."".$newname;
+		
+		if(!file_exists($target_dir)) return false;
+		//echo $target_dir." => ".$new;
+		
+		if(rename($target_dir, $new)) {
+			echo "Rename Success!!";
+		} else {
+			echo "Rename Failed!!";
+		}
+	}
+
 	function delete_dir() {
 		$pid = $_POST["pid"];
 		$path = $_POST["path"];
@@ -190,6 +219,22 @@ class Project extends CI_Controller {
 			echo "Folder has not exists!!";
 		}
 	}	
+
+	function delete_file() {
+		$pid = $_POST["pid"];
+		$path = $_POST["path"];
+		$target_dir = $this->project_dir."/".$pid."/".$path;
+
+		if(file_exists($target_dir)) {
+			if(@unlink($target_dir)) {
+				echo "File Deleted!!";
+			} else {
+				echo "Delete File Failed!!";
+			}			
+		} else {
+			echo "File has not exists!!";
+		}
+	}
 
 	function get_template($name="bootstrap4") {
 		if($name=="bootstrap4") $template = $this->load->view("bootstrap4_template", "", true);
@@ -241,7 +286,7 @@ class Project extends CI_Controller {
 				if($val!="prev.php") $data[$path] = $path;
 				//$data = file_get_contents($target_dir."/".$val);
 				//$this->zip->add_data($val, $data);
-			} else {			
+			} else {
 				$path = $root.$name;
 				//echo $path."<br>";
 				$data[$path] = $path;
@@ -252,6 +297,61 @@ class Project extends CI_Controller {
 			//$this->zip->add_data($val, $data);
 		}
 		return $data;
+	}
+
+	function file_upload()
+	{
+		header('Content-Type: application/json');
+		$file = $_FILES["file_data"];
+		$pid = $_POST["pid"];
+		$path = $_POST["path"];
+		/*
+		$pid = $_POST["pid"];
+		$path = $_POST["path"];
+		*/
+		//$upload_path = $this->project_dir . "/" .$student_id."/".$project_id."/photo";
+		//echo json_encode($file);
+		
+		if(!$path) $target_dir = $this->project_dir."/".$pid;
+		else  $target_dir = $this->project_dir."/".$pid."/".$path;
+		//$target_file = $target_dir."/".basename($file["name"]);
+		$upload = $this->do_upload("file_data", $target_dir);
+		//$result = $this->_upload_file($file["tmp_name"], $target_file, true);
+		
+		//$name = $file['name'];
+		//$ext = pathinfo($name, PATHINFO_EXTENSION);			
+		//$dest_file_name = str_replace(array(".","_"," "),"-",time().microtime()).".".$ext;
+
+		//$result = $this->_upload_file_2("file_data", $dest_file_name, $upload_path, true, Array("resize"=>Array("width"=>1500, "height"=>1500)));
+
+		//echo json_encode(Array("result"=>$result, "destination"=>$upload_path."/".$dest_file_name, "file"=>$file));
+		echo json_encode(Array("result"=>true, "file"=>$file, "path"=>$target_dir, "upload"=>$upload));
+	}
+
+	public function do_upload($file, $path)
+	{
+		$config['upload_path']          = $path;
+		$config['allowed_types']        = 'gif|jpg|png';
+
+		$this->load->library('upload', $config);
+
+		if (!$this->upload->do_upload($file))
+		{
+			$error = array('error' => $this->upload->display_errors());
+			//$this->load->view('upload_form', $error);
+			return $error;
+		}
+		else
+		{
+			$upload_data = $this->upload->data();
+			$fname = $upload_data['file_name'];
+			$fullpath = $upload_data['full_path'];
+			$ch = chmod($fullpath, 0777);
+			
+			$data = array('upload_data' => $this->upload->data());
+			return $data;
+			//$this->load->view('upload_success', $data);
+		}
 	}
 
 	function create() {
