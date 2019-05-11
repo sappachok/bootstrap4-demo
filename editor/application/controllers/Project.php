@@ -141,6 +141,85 @@ class Project extends CI_Controller {
 		return $project;
 	}
 
+	function get_source_dir() {
+		$pid = $_POST["pid"];
+		$path = (@$_POST["path"]) ? $_POST["path"] : "";
+		//echo $pid;
+		if($path) $target_dir = $this->project_dir."/".$pid."/".$path;
+		else $target_dir = $this->project_dir."/".$pid;
+		$map = directory_map($target_dir, 2);
+		
+		$data["project_name"] = $pid;
+		$data["project_dir"] = $map;
+		$data["src_path"] = $path;
+
+		$data["reserved_file"] = Array(
+			"code.html", "code.css", "code.js"
+		);
+
+		$data["hidden_file"] = Array( 
+			"config.json", "prev.php"
+		);
+
+		$this->load->view("source-dir", $data);
+	}
+
+	function create_dir() {
+		$pid = $_POST["pid"];
+		$folder_name = $_POST["folder_name"];
+		$path = (@$_POST["path"]) ? $_POST["path"] : "";
+
+		if(!$path) $target_dir = $this->project_dir."/".$pid."/".$folder_name;
+		else $target_dir = $this->project_dir."/".$pid."/".$path.$folder_name;
+
+		if(file_exists($target_dir)) {
+			echo "Folder has exists!!";
+		} else {
+			if(@mkdir($target_dir, 0775, true)) {
+				echo "Create Folder Success!!";
+			} else {
+				echo "Create Folder Failed!!";
+			}
+		}
+	}
+
+	function rename_dir() {
+		$pid = $_POST["pid"];
+		$path = $_POST["path"];
+		$fname = $_POST["fname"];
+		$newname = $_POST["newname"];
+
+		if($fname == "" || $newname=="") return false;
+
+		$target_dir = $this->project_dir."/".$pid."/".$path."".$fname;
+		$new = $this->project_dir."/".$pid."/".$path."".$newname;
+		
+		if(!file_exists($target_dir)) return false;
+		//echo $target_dir." => ".$new;
+		
+		if(rename($target_dir, $new)) {
+			echo "Rename Success!!";
+		} else {
+			echo "Rename Failed!!";
+		}
+	}
+
+	function delete_dir() {
+		$pid = $_POST["pid"];
+		$path = $_POST["path"];
+		$target_dir = $this->project_dir."/".$pid."/".$path;
+
+		if(file_exists($target_dir)) {
+			if(@rmdir($target_dir)) {
+				echo "Folder Deleted!!";
+			} else {
+				echo "Delete Folder Failed!!";
+			}			
+		} else {
+			echo "Folder has not exists!!";
+		}
+	}	
+
 	function get_template($name="bootstrap4") {
 		if($name=="bootstrap4") $template = $this->load->view("bootstrap4_template", "", true);
 		else if($name=="html5") $template = $this->load->view("html5_template", "", true);
@@ -203,6 +282,29 @@ class Project extends CI_Controller {
 		}
 		return $data;
 	}
+
+	function file_upload()
+	{
+		$file = $_FILES["file_data"];
+		/*
+		$pid = $_POST["pid"];
+		$path = $_POST["path"];
+		*/
+		//$upload_path = $this->project_dir . "/" .$student_id."/".$project_id."/photo";
+		echo json_encode($file);
+		/*
+		$target_file = $fullpath . "/" . basename( $file["name"]);
+		$message = "";
+		$result = $this->_upload_file($file["tmp_name"], $target_file, true);
+		*/
+		//$name = $file['name'];
+		//$ext = pathinfo($name, PATHINFO_EXTENSION);			
+		//$dest_file_name = str_replace(array(".","_"," "),"-",time().microtime()).".".$ext;
+
+		//$result = $this->_upload_file_2("file_data", $dest_file_name, $upload_path, true, Array("resize"=>Array("width"=>1500, "height"=>1500)));
+
+		//echo json_encode(Array("result"=>$result, "destination"=>$upload_path."/".$dest_file_name, "file"=>$file));
+	}	
 
 	function create() {
 		$project_name = $_POST["project_name"];
