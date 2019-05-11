@@ -31,10 +31,10 @@
 </style>
 <ul class="nav nav-tabs" role="tablist">
   <li class="nav-item">
-    <a id="tab_directory" class="nav-link active" href="#directory" role="tab" data-toggle="tab" aria-selected="true">Directory</a>
+    <a id="tab_directory" class="nav-link active" href="#directory" role="tab" data-toggle="tab" aria-selected="true"><i class="fas fa-th-list"></i> Directory</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#uploader" role="tab" data-toggle="tab">Upload</a>
+    <a class="nav-link" href="#uploader" role="tab" data-toggle="tab"><i class="fas fa-file-upload"></i> Upload</a>
   </li>
 </ul>
 <input type="hidden" name="project_name" value="<?php echo $project_name; ?>">
