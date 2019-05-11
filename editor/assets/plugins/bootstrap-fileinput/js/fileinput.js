@@ -641,6 +641,7 @@
                         self[key] = value;
                         break;
                 }
+				//console.log(key + " =>" + value);
             });
             if (self.rtl) { // swap buttons for rtl
                 tmp = self.previewZoomButtonIcons.prev;
@@ -2317,6 +2318,7 @@
             if (e && e.isDefaultPrevented()) {
                 return;
             }
+			//alert(self.isAjaxUpload);
             if (!self.isAjaxUpload) {
                 if (isEnabled && $btn.attr('type') !== 'submit') {
                     $form = $btn.closest('form');

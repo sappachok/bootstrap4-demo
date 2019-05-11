@@ -14,9 +14,9 @@
 <!-- popper.min.js below is needed if you use bootstrap 4.x. You can also use the bootstrap js 
    3.3.x versions without popper.min.js. -->
 <!-- the main fileinput plugin file -->
-<script src="<?php echo base_url("assets/plugins"); ?>/bootstrap-fileinput/js/fileinput.min.js"></script>
+<script src="<?php echo base_url("assets/plugins"); ?>/bootstrap-fileinput/js/fileinput.js"></script>
 <!-- optionally if you need a theme like font awesome theme you can include it as mentioned below -->
-<script src="<?php echo base_url("assets/plugins"); ?>/bootstrap-fileinput/themes/fa/theme.js"></script>
+<script src="<?php echo base_url("assets/plugins"); ?>/bootstrap-fileinput/themes/fas/theme.js"></script>
 <!-- optionally if you need translation for your language then include  locale file as mentioned below -->
 <script src="<?php echo base_url("assets/plugins"); ?>/bootstrap-fileinput/js/locales/uk.js"></script>
 <style>
@@ -31,7 +31,7 @@
 </style>
 <ul class="nav nav-tabs" role="tablist">
   <li class="nav-item">
-    <a class="nav-link  active" href="#directory" role="tab" data-toggle="tab" aria-selected="true">Directory</a>
+    <a id="tab_directory" class="nav-link active" href="#directory" role="tab" data-toggle="tab" aria-selected="true">Directory</a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="#uploader" role="tab" data-toggle="tab">Upload</a>
@@ -101,7 +101,7 @@
                         echo "<div class='input-group item-edit' style='display:none;'>";
                         echo "<input type='text' name='newname' class='form-control' value='".$labelname."'><button type='button' class='btn btn-default rename-cancel-btn'>Cancel</button>";
                         echo "</div></form></td>";
-                        echo "<td class='text-right'><a href='#rename' class='btn btn-default rename-folder'>Rename</a> <a href='#delete' class='btn btn-default delete-folder'>Delete</a></td>";
+                        echo "<td class='text-right'><a href='#rename' class='btn btn-default rename-folder'>Rename</a> <a href='#delete' class='btn btn-default delete-file'>Delete</a></td>";
                         echo "</tr>";   
                     }           
                 }
@@ -118,7 +118,11 @@
         <div class="col-12"> 
         <p>
             <form method="post" enctype="multipart/form-data">
-            <input id="input-id" name="file_data[]" type="file" class="file" multiple data-preview-file-type="text" >
+			<div class="form-group">
+				<div class="file-loading">
+				<input id="input-id" type="file" multiple class="file" data-overwrite-initial="false">
+				</div>
+			</div>
             </form>
         </p>
         </div>
@@ -126,9 +130,36 @@
   </div>  
 </div>
 <script>
+var projectname = "<?php echo $project_name; ?>";
+var curpath = "<?php echo str_replace('\\','\\\\',$src_path); ?>";
+
+jQuery("#input-id").fileinput({
+	theme: 'fas',
+	uploadUrl: '<?php echo site_url("project/file_upload"); ?>', // you must set a valid URL here else you will get an error
+	uploadExtraData: {pid: projectname, path: curpath },
+	overwriteInitial: false,
+	allowedFileTypes: ['image'],
+	showCancel: true,
+	initialPreviewAsData: true,
+	browseOnZoneClick: true
+	//allowedFileTypes: ['image', 'video', 'flash'],
+}).on('fileuploaded', function(event, data, previewId, index, fileId) {
+	console.log('File Uploaded', 'ID: ' + fileId + ', Thumb ID: ' + previewId);
+	console.log(data.response);
+}).on('fileuploaderror', function(event, data, msg) {
+	console.log('File Upload Error', 'ID: ' + data.fileId + ', Thumb ID: ' + data.previewId);
+}).on('filebatchuploadcomplete', function(event, data, preview, config, tags, extraData) {
+	console.log('File Batch Uploaded', preview, config, tags, extraData);
+	//console.log(data);
+});
+
 jQuery(document).ready(function() {
     var projectname = jQuery("input[name=project_name]").val();
     var curpath = jQuery("input[name=src_path]").val();
+
+	jQuery("#tab_directory").click(function() {
+		source_dir(curpath);
+	});
 
     jQuery("form[name=renameForm]").submit(function(e) {
         var datapath = jQuery(this).attr("data-path");
@@ -173,26 +204,6 @@ jQuery(document).ready(function() {
         source_dir(datapath);
     });
 
-    jQuery("#input-id").fileinput({
-        theme: 'fa',
-        uploadUrl: '<?php echo site_url("project/file_upload"); ?>', // you must set a valid URL here else you will get an error
-        allowedFileExtensions: [],
-		uploadExtraData: {pid: projectname, path: curpath },
-        overwriteInitial: false,
-        maxFileSize: 20000,
-        maxFilesNum: 50,
-        //allowedFileTypes: ['image', 'video', 'flash'],
-        slugCallback: function (filename) {
-            return filename.replace('(', '_').replace(']', '_');
-        }
-    }).on('fileuploaded', function(event, previewId, index, fileId) {
-        console.log('File Uploaded', 'ID: ' + fileId + ', Thumb ID: ' + previewId);
-    }).on('fileuploaderror', function(event, data, msg) {
-        console.log('File Upload Error', 'ID: ' + data.fileId + ', Thumb ID: ' + data.previewId);
-    }).on('filebatchuploadcomplete', function(event, preview, config, tags, extraData) {
-        console.log('File Batch Uploaded', preview, config, tags, extraData);
-    });
-
     jQuery("#createDirForm").submit(function(e) {
         e.preventDefault();
         
@@ -213,6 +224,21 @@ jQuery(document).ready(function() {
             
             if(path) {
                 jQuery.post('<?php echo site_url("project/delete_dir"); ?>', { pid : projectname, path: path }, function(data) {
+                    alert(data);
+                    source_dir(curpath);
+                });
+            }
+        }
+    });
+
+    jQuery(".delete-file").click(function() {
+        var curpath = jQuery("input[name=src_path]").val();
+        if(window.confirm("Are you sure delete this folder.")) {
+            var path = jQuery(this).closest("tr").attr("data-path");
+            if(curpath) path = curpath+path;
+            
+            if(path) {
+                jQuery.post('<?php echo site_url("project/delete_file"); ?>', { pid : projectname, path: path }, function(data) {
                     alert(data);
                     source_dir(curpath);
                 });
