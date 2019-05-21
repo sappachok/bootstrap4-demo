@@ -95,12 +95,12 @@ fieldset.form-group {
         </div>
     </p>
     </div>
-    <div class="col-4">
+    <div class="col-5">
     <p>
         <div class="form-group">
         <button id="runBtn" type="button" class="btn btn-success"><i class="fas fa-play-circle"></i> Run</button>
         <button id="sourceBtn" type="button" class="btn btn-info" data-toggle="modal" data-target="#sourceModal" disabled><i class="fas fa-file-upload"></i> Upload</button>
-		<a href="<?php echo base_url("projects"); ?>/<?php echo $project_name; ?>/code.html" class="btn btn-secondary" target="_blank"><i class="far fa-window-maximize"></i> View Window</a>
+		<a href="<?php echo base_url("projects"); ?>/<?php echo $project_name; ?>/code.html" class="btn btn-secondary" target="_blank"><i class="far fa-window-maximize"></i> View</a>
         <a href="<?php echo site_url("project/zip"); ?>/<?php echo path_encode($project_name); ?>" class="btn btn-dark" target="_blank"><i class="fas fa-download"></i> Download</a>
 
 		<!--<button type="button" class="btn btn-dark"><i class="fas fa-download"></i> Download</button>-->
@@ -155,7 +155,7 @@ fieldset.form-group {
         </div>
     </p>
     </div>
-    <div class="col-3">
+    <div class="col-2">
     <p>
 		<div class="form-group text-right">
         <button id="collapeBtn" type="button" class="btn btn-default" data-toggle="collapse" data-target="#topnav">Navbar <i class="fas fa-angle-double-up"></i></button>
