@@ -203,7 +203,7 @@ fieldset.form-group {
         <div id="split-bar"></div>
         <form>
             <div id="test"></div>
-            <textarea id="htmlcode" name="htmlcode" style="display:none"><?php echo ($project["html"]) ? $project["html"] : "" ?></textarea>
+            <textarea id="htmlcode" name="htmlcode" style="display:none"><?php echo ($project["html"]) ? htmlspecialchars($project["html"]) : "" ?></textarea>
             <textarea id="csscode" name="csscode" style="display:none"><?php echo ($project["css"]) ? $project["css"] : "" ?></textarea>
             <textarea id="jscode" name="jscode" style="display:none"><?php echo ($project["js"]) ? $project["js"] : "" ?></textarea>
             <textarea id="template" name="template" style="display:none"><?php echo $template; ?></textarea>
